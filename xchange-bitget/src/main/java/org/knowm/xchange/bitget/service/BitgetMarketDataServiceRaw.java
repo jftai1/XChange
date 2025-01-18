@@ -1,9 +1,11 @@
 package org.knowm.xchange.bitget.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import org.knowm.xchange.bitget.BitgetAdapters;
 import org.knowm.xchange.bitget.BitgetExchange;
+import org.knowm.xchange.bitget.dto.marketdata.BitgetCandleDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetCoinDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetMarketDepthDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetServerTime;
@@ -32,6 +34,32 @@ public class BitgetMarketDataServiceRaw extends BitgetBaseService {
 
   public List<BitgetTickerDto> getBitgetTickerDtos(Instrument instrument) throws IOException {
     return bitget.tickers(BitgetAdapters.toString(instrument)).getData();
+  }
+
+  public List<BitgetCandleDto> getBitgetCandleDtos(Instrument instrument,
+      BitgetCandleStickPeriodType periodType,
+      Date startTime,
+      Date endTime,
+      Integer limit
+  ) throws IOException {
+    return bitget.candles(BitgetAdapters.toString(instrument),
+        periodType.getFieldValue(),
+        String.valueOf(startTime.getTime()),
+        String.valueOf(endTime.getTime()),
+        limit).getData();
+  }
+
+  public List<BitgetCandleDto> getBitgetCandleHistoryDtos(Instrument instrument,
+      BitgetCandleStickPeriodType periodType,
+      Date startTime,
+      Date endTime,
+      Integer limit
+  ) throws IOException {
+    return bitget.candlesHistory(BitgetAdapters.toString(instrument),
+        periodType.getFieldValue(),
+        String.valueOf(startTime.getTime()),
+        String.valueOf(endTime.getTime()),
+        limit).getData();
   }
 
   public BitgetMarketDepthDto getBitgetMarketDepthDtos(Instrument instrument) throws IOException {

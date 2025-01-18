@@ -60,7 +60,8 @@
         <module>xchange-btcc</module>
         <module>xchange-btcmarkets</module>
         <module>xchange-btcturk</module>
-        <module>xchange-bybit</module>
+        <!-- Too much problem deactivate -->
+        <!--module>xchange-bybit</module-->
         <module>xchange-ccex</module>
         <module>xchange-cexio</module>
         <module>xchange-coinbase</module>

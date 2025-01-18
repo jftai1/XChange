@@ -4,16 +4,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.bitget.BitgetIntegrationTestParent;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.exceptions.InstrumentNotValidException;
 import org.knowm.xchange.instrument.Instrument;
+import org.knowm.xchange.service.trade.params.CandleStickDataParams;
+import org.knowm.xchange.service.trade.params.DefaultCandleStickParamWithLimit;
 
 class BitgetMarketDataServiceIntegration extends BitgetIntegrationTestParent {
 
@@ -72,6 +78,44 @@ class BitgetMarketDataServiceIntegration extends BitgetIntegrationTestParent {
                 assertThat(ticker.getBid()).isLessThan(ticker.getAsk());
               }
             });
+  }
+
+  @Test
+  void valid_candles() throws IOException {
+    CurrencyPair currencyPair = CurrencyPair.BTC_USDT;
+    Date start = Date.from(Instant.now().minus(24, ChronoUnit.HOURS));
+    Date end = Date.from(Instant.now());
+    long periodInSeconds = BitgetCandleStickPeriodType.CANDLE_STICK_1H.getPeriodInSecs();
+    int limit = 100;
+    CandleStickDataParams candleStickDataParams = new DefaultCandleStickParamWithLimit(start,
+        end,
+        periodInSeconds,
+        limit);
+    CandleStickData candleStickData = exchange.getMarketDataService()
+        .getCandleStickData(currencyPair, candleStickDataParams);
+    assertThat(candleStickData.getInstrument().getBase()).isEqualTo(CurrencyPair.BTC_USDT.base);
+    assertThat(candleStickData.getInstrument().getCounter()).isEqualTo(
+        CurrencyPair.BTC_USDT.counter);
+    assertThat(candleStickData.getCandleSticks()).isNotEmpty();
+  }
+
+  @Test
+  void valid_candles_from_60_days_ago() throws IOException {
+    CurrencyPair currencyPair = CurrencyPair.BTC_USDT;
+    Date start = Date.from(Instant.now().minus(60, ChronoUnit.DAYS));
+    Date end = Date.from(Instant.now().minus(60, ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS));
+    long periodInSeconds = BitgetCandleStickPeriodType.CANDLE_STICK_1H.getPeriodInSecs();
+    int limit = 100;
+    CandleStickDataParams candleStickDataParams = new DefaultCandleStickParamWithLimit(start,
+        end,
+        periodInSeconds,
+        limit);
+    CandleStickData candleStickData = exchange.getMarketDataService()
+        .getCandleStickData(currencyPair, candleStickDataParams);
+    assertThat(candleStickData.getInstrument().getBase()).isEqualTo(CurrencyPair.BTC_USDT.base);
+    assertThat(candleStickData.getInstrument().getCounter()).isEqualTo(
+        CurrencyPair.BTC_USDT.counter);
+    assertThat(candleStickData.getCandleSticks()).isNotEmpty();
   }
 
   @Test

@@ -18,6 +18,7 @@ import org.knowm.xchange.bitget.dto.account.BitgetDepositWithdrawRecordDto.Depos
 import org.knowm.xchange.bitget.dto.account.BitgetDepositWithdrawRecordDto.RecordType;
 import org.knowm.xchange.bitget.dto.account.params.BitgetMainSubTransferHistoryParams;
 import org.knowm.xchange.bitget.dto.account.params.BitgetMainSubTransferHistoryParams.Role;
+import org.knowm.xchange.bitget.dto.marketdata.BitgetCandleDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetMarketDepthDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto.Status;
@@ -35,6 +36,8 @@ import org.knowm.xchange.dto.account.Balance;
 import org.knowm.xchange.dto.account.FundingRecord;
 import org.knowm.xchange.dto.account.FundingRecord.Type;
 import org.knowm.xchange.dto.account.Wallet;
+import org.knowm.xchange.dto.marketdata.CandleStick;
+import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
@@ -287,4 +290,21 @@ public class BitgetAdapters {
 
     return null;
   }
+
+  public CandleStickData toCandleStickData(CurrencyPair currencyPair, List<BitgetCandleDto> bitgetCandleDtos) {
+    return new CandleStickData(
+        currencyPair,
+        bitgetCandleDtos.stream()
+            .map(dto -> new CandleStick.Builder()
+                    .timestamp(toDate(dto.getTimestamp()))
+                    .open(dto.getOpeningPrice())
+                    .close(dto.getClosingPrice())
+                    .low(dto.getLowestPrice())
+                    .high(dto.getHighestPrice())
+                    .volume(dto.getTradingVolumneBaseCurrency())
+                    .quotaVolume(dto.getTradingVolumneQuoteCurrency())
+                    .build())
+            .collect(Collectors.toList()));
+  }
+
 }
