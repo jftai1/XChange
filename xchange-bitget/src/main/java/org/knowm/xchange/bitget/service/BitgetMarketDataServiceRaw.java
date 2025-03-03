@@ -36,12 +36,13 @@ public class BitgetMarketDataServiceRaw extends BitgetBaseService {
     return bitget.tickers(BitgetAdapters.toString(instrument)).getData();
   }
 
-  public List<BitgetCandleDto> getBitgetCandleDtos(Instrument instrument,
+  public List<BitgetCandleDto> getBitgetRecentCandleDtos(Instrument instrument,
       BitgetCandleStickPeriodType periodType,
       Date startTime,
       Date endTime,
       Integer limit
   ) throws IOException {
+    limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candles(BitgetAdapters.toString(instrument),
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
@@ -51,13 +52,12 @@ public class BitgetMarketDataServiceRaw extends BitgetBaseService {
 
   public List<BitgetCandleDto> getBitgetCandleHistoryDtos(Instrument instrument,
       BitgetCandleStickPeriodType periodType,
-      Date startTime,
       Date endTime,
       Integer limit
   ) throws IOException {
+    limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candlesHistory(BitgetAdapters.toString(instrument),
         periodType.getFieldValue(),
-        String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),
         limit).getData();
   }

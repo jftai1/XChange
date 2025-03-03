@@ -54,7 +54,6 @@ public interface Bitget {
   BitgetResponse<List<BitgetCandleDto>> candlesHistory(
       @QueryParam("symbol") String symbol,
       @QueryParam("granularity") String granularity,
-      @QueryParam("startTime") String startTime,
       @QueryParam("endTime") String endTime,
       @QueryParam("limit") Integer limit)
       throws IOException, BitgetException;

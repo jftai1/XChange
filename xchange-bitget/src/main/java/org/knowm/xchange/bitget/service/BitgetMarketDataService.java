@@ -3,7 +3,9 @@ package org.knowm.xchange.bitget.service;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -17,16 +19,20 @@ import org.knowm.xchange.bitget.dto.marketdata.BitgetCoinDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto.Status;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetTickerDto;
+import org.knowm.xchange.bitget.service.params.BitgetCandleStickParams;
+import org.knowm.xchange.bitget.service.params.BitgetCandleStickHistoryParams;
+import org.knowm.xchange.bitget.service.params.BitgetCandleStickParamsFactory;
+import org.knowm.xchange.bitget.service.params.BitgetCandleStickRecentParams;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.ExchangeHealth;
-import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
-import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
 import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.marketdata.MarketDataService;
+import org.knowm.xchange.service.marketdata.params.CurrencyPairsParam;
+import org.knowm.xchange.service.marketdata.params.InstrumentsParams;
 import org.knowm.xchange.service.marketdata.params.Params;
 import org.knowm.xchange.service.trade.params.CandleStickDataParams;
 import org.knowm.xchange.service.trade.params.DefaultCandleStickParam;
@@ -100,6 +106,28 @@ public class BitgetMarketDataService extends BitgetMarketDataServiceRaw
   @Override
   public List<Ticker> getTickers(Params params) throws IOException {
     try {
+      List<Ticker>tickers = new ArrayList<Ticker>();
+
+      if (params instanceof CurrencyPairsParam) {
+        for (CurrencyPair currencyPair : ((CurrencyPairsParam) params).getCurrencyPairs()) {
+          tickers.addAll(getBitgetTickerDtos(currencyPair).stream()
+              .map(BitgetAdapters::toTicker)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+        }
+        return tickers;
+      }
+
+      if (params instanceof InstrumentsParams) {
+        for (Instrument instrument : ((InstrumentsParams) params).getInstruments()) {
+          tickers.addAll(getBitgetTickerDtos(instrument).stream()
+              .map(BitgetAdapters::toTicker)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+        }
+        return tickers;
+      }
+
       return getBitgetTickerDtos(null).stream()
           .map(BitgetAdapters::toTicker)
           .filter(Objects::nonNull)
@@ -118,38 +146,21 @@ public class BitgetMarketDataService extends BitgetMarketDataServiceRaw
   public CandleStickData getCandleStickData(CurrencyPair currencyPair, CandleStickDataParams params)
       throws IOException {
 
-    if (!(params instanceof DefaultCandleStickParam)) {
-      throw new NotYetImplementedForExchangeException("Only DefaultCandleStickParam is supported");
-    }
-    DefaultCandleStickParam defaultCandleStickParam = (DefaultCandleStickParam) params;
-    BitgetCandleStickPeriodType periodType =
-        BitgetCandleStickPeriodType.getPeriodTypeFromSecs(
-            defaultCandleStickParam.getPeriodInSecs());
-    if (periodType == null) {
-      throw new NotYetImplementedForExchangeException(
-          "CandleStickPeriodType not supported;"
-              + Arrays.toString(BitgetCandleStickPeriodType.getSupportedPeriodsInSecs()));
-    }
+    BitgetCandleStickParams bitgetParams = BitgetCandleStickParamsFactory.createBitgetCandleStickParams(params);
 
-    // TODO
-    boolean queryCandleHistory = defaultCandleStickParam.getStartDate() != null;
-
-    Integer limit = null;
-    if (params instanceof DefaultCandleStickParamWithLimit) {
-      int limitParam = (((DefaultCandleStickParamWithLimit) params).getLimit());
-      if (limitParam > 1000) {
-        throw new NotAvailableFromExchangeException(String.format(
-            "CandleStick limit may not exceed 1000, but was %d", limitParam
-        ));
-      }
-      limit = (limitParam == 0) ? null : limitParam;
+    List<BitgetCandleDto> bitgetCandleDtos = null;
+    if (bitgetParams instanceof BitgetCandleStickRecentParams) {
+      bitgetCandleDtos = getBitgetRecentCandleDtos(currencyPair,
+          bitgetParams.getPeriodType(),
+          bitgetParams.getStartDate(),
+          bitgetParams.getEndDate(),
+          bitgetParams.getLimit());
+    }else if (bitgetParams instanceof BitgetCandleStickHistoryParams){
+      bitgetCandleDtos = getBitgetCandleHistoryDtos(currencyPair,
+          bitgetParams.getPeriodType(),
+          bitgetParams.getEndDate(),
+          bitgetParams.getLimit());
     }
-
-    List<BitgetCandleDto> bitgetCandleDtos = getBitgetCandleDtos(currencyPair,
-        periodType,
-        defaultCandleStickParam.getStartDate(),
-        defaultCandleStickParam.getEndDate(),
-        limit);
     return BitgetAdapters.toCandleStickData(currencyPair, bitgetCandleDtos);
   }
 

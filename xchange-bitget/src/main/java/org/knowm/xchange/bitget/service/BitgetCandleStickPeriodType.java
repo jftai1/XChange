@@ -11,20 +11,21 @@ public enum BitgetCandleStickPeriodType {
   CANDLE_STICK_1H(60, "1h"),
   CANDLE_STICK_2H(2 * 60, "2h"),
   CANDLE_STICK_4H(4 * 60, "4h");
-  /* Kept in seconds  */
-  private final long periodInSecs;
+
+  /* Period in seconds  */
+  private final long periodInSeconds;
   /* Exchange related value */
   private final String fieldValue;
 
   BitgetCandleStickPeriodType(long periodInMinutes, String fieldValue) {
-    this.periodInSecs = periodInMinutes * 1000;
+    this.periodInSeconds = periodInMinutes * 60;
     this.fieldValue = fieldValue;
   }
 
-  static BitgetCandleStickPeriodType getPeriodTypeFromSecs(long periodInSecs) {
+  public static BitgetCandleStickPeriodType getPeriodTypeFromSeconds(long periodInSeconds) {
     BitgetCandleStickPeriodType result = null;
     for (BitgetCandleStickPeriodType period : BitgetCandleStickPeriodType.values()) {
-      if (period.periodInSecs == periodInSecs) {
+      if (period.periodInSeconds == periodInSeconds) {
         result = period;
         break;
       }
@@ -32,11 +33,11 @@ public enum BitgetCandleStickPeriodType {
     return result;
   }
 
-  public static long[] getSupportedPeriodsInSecs() {
+  public static long[] getSupportedPeriodsInSeconds() {
     long[] result = new long[BitgetCandleStickPeriodType.values().length];
     int index = 0;
     for (BitgetCandleStickPeriodType period : BitgetCandleStickPeriodType.values()) {
-      result[index++] = period.periodInSecs;
+      result[index++] = period.periodInSeconds;
     }
     return result;
   }
