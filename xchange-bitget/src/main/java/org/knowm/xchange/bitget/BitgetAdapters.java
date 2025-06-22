@@ -23,10 +23,12 @@ import org.knowm.xchange.bitget.dto.marketdata.BitgetMarketDepthDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetSymbolDto.Status;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetTickerDto;
+import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderParamsDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetFillDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetOrderInfoDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetOrderInfoDto.BitgetOrderStatus;
 import org.knowm.xchange.bitget.dto.trade.BitgetPlaceOrderDto;
+import org.knowm.xchange.bitget.dto.trade.BitgetPlaceOrderDto.TimeInForce;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -45,6 +47,7 @@ import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.instrument.Instrument;
+import org.knowm.xchange.service.trade.params.DefaultCancelOrderByInstrumentAndIdParams;
 
 @UtilityClass
 public class BitgetAdapters {
@@ -234,6 +237,27 @@ public class BitgetAdapters {
         .build();
   }
 
+  public BitgetPlaceOrderDto toBitgetPlaceOrderDto(LimitOrder limitOrder) {
+    return BitgetPlaceOrderDto.builder()
+        .symbol(toString(limitOrder.getInstrument()))
+        .orderSide(limitOrder.getType())
+        .orderType(BitgetOrderInfoDto.OrderType.LIMIT)
+        .timeInForce(TimeInForce.GOOD_TIL_CANCELLED)
+        .price(limitOrder.getLimitPrice())
+        .size(limitOrder.getOriginalAmount())
+        .clientOid(limitOrder.getUserReference())
+        .requestTime(limitOrder.getTimestamp().toInstant())
+        .build();
+  }
+
+  public BitgetCancelOrderParamsDto toBitgetCancelOrderParamsDto(
+      DefaultCancelOrderByInstrumentAndIdParams params) {
+    return BitgetCancelOrderParamsDto.builder()
+        .orderId(params.getOrderId())
+        .symbol(toString(params.getInstrument()))
+        .build();
+  }
+
   public UserTrade toUserTrade(BitgetFillDto bitgetFillDto) {
     return new UserTrade(
         bitgetFillDto.getOrderSide(),
@@ -303,6 +327,7 @@ public class BitgetAdapters {
                     .high(dto.getHighestPrice())
                     .volume(dto.getTradingVolumneBaseCurrency())
                     .quotaVolume(dto.getTradingVolumneQuoteCurrency())
+                .amount(dto.getTradingVolumneUSDT())
                     .build())
             .collect(Collectors.toList()));
   }

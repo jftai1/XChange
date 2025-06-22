@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/** Data object representing a CandleStick */
+/** Data object representing a CandleStick
+ * Ajout du champ amount.
+ */
 @JsonDeserialize(builder = CandleStick.Builder.class)
 public class CandleStick {
 
@@ -22,6 +24,7 @@ public class CandleStick {
   private final BigDecimal ask;
   private final BigDecimal askSize;
   private final Date timestamp;
+  private final BigDecimal amount;
 
   public CandleStick(
       Date timestamp,
@@ -36,7 +39,8 @@ public class CandleStick {
       BigDecimal bid,
       BigDecimal bidSize,
       BigDecimal ask,
-      BigDecimal askSize) {
+      BigDecimal askSize,
+      BigDecimal amount) {
     this.timestamp = timestamp;
     this.open = open;
     this.last = last;
@@ -50,6 +54,7 @@ public class CandleStick {
     this.bidSize = bidSize;
     this.ask = ask;
     this.askSize = askSize;
+    this.amount = amount;
   }
 
   public Date getTimestamp() {
@@ -104,6 +109,8 @@ public class CandleStick {
     return askSize;
   }
 
+  public BigDecimal getAmount() { return amount; }
+
   @JsonPOJOBuilder(withPrefix = "")
   public static class Builder {
     private Date timestamp;
@@ -119,6 +126,7 @@ public class CandleStick {
     private BigDecimal bidSize;
     private BigDecimal ask;
     private BigDecimal askSize;
+    private BigDecimal amount;
 
     public static Builder from(CandleStick candleStick) {
       return new Builder()
@@ -134,7 +142,8 @@ public class CandleStick {
           .bid(candleStick.getBid())
           .bidSize(candleStick.getBidSize())
           .ask(candleStick.getAsk())
-          .askSize(candleStick.getAskSize());
+          .askSize(candleStick.getAskSize())
+          .amount(candleStick.getAmount());
     }
 
     public Builder timestamp(Date timestamp) {
@@ -202,6 +211,11 @@ public class CandleStick {
       return this;
     }
 
+    public Builder amount(BigDecimal amount) {
+      this.amount = amount;
+      return this;
+    }
+
     public CandleStick build() {
       return new CandleStick(
           timestamp,
@@ -216,7 +230,8 @@ public class CandleStick {
           bid,
           bidSize,
           ask,
-          askSize);
+          askSize,
+          amount);
     }
   }
 }

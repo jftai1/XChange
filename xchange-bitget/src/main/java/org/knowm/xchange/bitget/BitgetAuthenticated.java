@@ -17,6 +17,8 @@ import org.knowm.xchange.bitget.dto.account.BitgetDepositWithdrawRecordDto;
 import org.knowm.xchange.bitget.dto.account.BitgetMainSubTransferRecordDto;
 import org.knowm.xchange.bitget.dto.account.BitgetSubBalanceDto;
 import org.knowm.xchange.bitget.dto.account.BitgetTransferRecordDto;
+import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderParamsDto;
+import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderResponseDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetFillDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetOrderInfoDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetPlaceOrderDto;
@@ -65,6 +67,17 @@ public interface BitgetAuthenticated {
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
       BitgetPlaceOrderDto bitgetPlaceOrderDto)
+      throws IOException, BitgetException;
+
+  @POST
+  @Path("api/v2/spot/trade/cancel-order")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetResponse<BitgetCancelOrderResponseDto> cancelOrder(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      BitgetCancelOrderParamsDto bitgetCancelOrderParamsDto)
       throws IOException, BitgetException;
 
   @GET
@@ -159,5 +172,23 @@ public interface BitgetAuthenticated {
       @QueryParam("startTime") Long startTime,
       @QueryParam("endTime") Long endTime,
       @QueryParam("idLessThan") String idLessThan)
+      throws IOException, BitgetException;
+
+  @GET
+  @Path("api/v2/spot/trade/unfilled-orders")
+  BitgetResponse<List<BitgetOrderInfoDto>> unfilledOrders(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @QueryParam("symbol") String symbol,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("requestTime") Long requestTime,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("idLessThan") String idLessThan,
+      @QueryParam("orderId") String orderId,
+      @QueryParam("tpslType") String tpslType,
+      @QueryParam("receiveWindow") Long receiveWindow)
       throws IOException, BitgetException;
 }
