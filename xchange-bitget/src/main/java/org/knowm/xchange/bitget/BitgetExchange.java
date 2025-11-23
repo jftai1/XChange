@@ -55,4 +55,10 @@ public class BitgetExchange extends BaseExchange {
 
     exchangeMetaData = new ExchangeMetaData(instruments, null, null, null, null);
   }
+
+  public boolean usingSandbox() {
+    return Boolean.TRUE.equals(
+        exchangeSpecification.getExchangeSpecificParametersItem(USE_SANDBOX));
+  }
+
 }

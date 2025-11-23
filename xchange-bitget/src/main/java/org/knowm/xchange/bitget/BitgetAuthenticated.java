@@ -36,6 +36,7 @@ public interface BitgetAuthenticated {
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
       @QueryParam("coin") String currency)
       throws IOException, BitgetException;
 
@@ -181,6 +182,7 @@ public interface BitgetAuthenticated {
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
       @QueryParam("symbol") String symbol,
       @QueryParam("limit") Integer limit,
       @QueryParam("requestTime") Long requestTime,

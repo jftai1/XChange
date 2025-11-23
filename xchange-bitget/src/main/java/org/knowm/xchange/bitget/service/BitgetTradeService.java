@@ -65,6 +65,7 @@ public class BitgetTradeService extends BitgetTradeServiceRaw implements TradeSe
                   bitgetDigest,
                   passphrase,
                   exchange.getNonceFactory(),
+                  buildDemoHeaderParamValue(),
                   symbol,
                   limit,
                   requestTime,

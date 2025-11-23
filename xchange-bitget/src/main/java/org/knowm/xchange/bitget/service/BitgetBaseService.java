@@ -38,4 +38,8 @@ public class BitgetBaseService extends BaseExchangeService<BitgetExchange> imple
     passphrase = exchange.getExchangeSpecification().getPassword();
     bitgetDigest = BitgetDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
   }
+
+  protected String buildDemoHeaderParamValue(){
+    return (exchange.usingSandbox() ? "1" : null);
+  }
 }

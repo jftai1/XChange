@@ -34,6 +34,7 @@ public class BitgetAccountServiceRaw extends BitgetBaseService {
             bitgetDigest,
             passphrase,
             exchange.getNonceFactory(),
+            buildDemoHeaderParamValue(),
             BitgetAdapters.toString(currency))
         .getData();
   }
