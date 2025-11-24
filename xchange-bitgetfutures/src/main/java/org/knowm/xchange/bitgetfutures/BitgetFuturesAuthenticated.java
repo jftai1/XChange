@@ -25,6 +25,8 @@ import org.knowm.xchange.bitget.dto.trade.BitgetPlaceOrderDto;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDto;
+import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesSubAccountBalanceDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -55,24 +57,40 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("productType") String productType)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Query the contract asset information of all sub-accounts.
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/account/sub-account-assets")
-  BitgetResponse<List<BitgetSubBalanceDto>> subBalances(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/trade/orderInfo")
-  BitgetResponse<List<BitgetOrderInfoDto>> orderInfo(
+  BitgetFuturesResponse<List<BitgetFuturesSubAccountBalanceDto>> subBalances(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("orderId") String orderId)
-      throws IOException, BitgetException;
+      @HeaderParam("paptrading") String demo,
+      @QueryParam("productType") String productType)
+      throws IOException, BitgetFuturesException;
+
+  @GET
+  @Path("api/v2/mix/order/detail")
+  BitgetFuturesResponse<List<BitgetFuturesOrderDetailDto>> orderDetail(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      @QueryParam("symbol") String symbol,
+      @QueryParam("productType") String productType,
+      @QueryParam("orderId") String orderId,
+      @QueryParam("clientOid") String clientOid)
+      throws IOException, BitgetFuturesException;
 
   @POST
   @Path("api/v2/spot/trade/place-order")
