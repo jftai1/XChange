@@ -3,7 +3,6 @@ package org.knowm.xchange.bitgetfutures.dto.account;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -50,8 +49,7 @@ public class BitgetFuturesSubAccountSubBalanceDto {
   private BigDecimal maxTransferOut;
 
   /**
-   * Account equity (margin coin),
-   * Includes unrealized PnL (based on mark price).
+   * Account equity (margin coin), Includes unrealized PnL (based on mark price).
    */
   @JsonProperty("accountEquity")
   private BigDecimal accountEquity;

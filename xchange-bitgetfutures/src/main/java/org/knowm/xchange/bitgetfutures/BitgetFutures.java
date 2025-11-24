@@ -45,6 +45,7 @@ public interface BitgetFutures {
 
   /**
    * Query all historical K-line data and return a maximum of 200 pieces of data.
+   *
    * @param symbol
    * @param producType
    * @param granularity
@@ -54,7 +55,7 @@ public interface BitgetFutures {
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
-  */
+   */
   @GET
   @Path("api/v2/mix/market/history-candles")
   BitgetFuturesResponse<List<BitgetFuturesCandleDto>> candlesHistory(
@@ -67,7 +68,9 @@ public interface BitgetFutures {
       throws IOException, BitgetFuturesException;
 
   /**
-   * Query the historical K-line data of contract index price, and return a maximum of 200 pieces of data.
+   * Query the historical K-line data of contract index price, and return a maximum of 200 pieces of
+   * data.
+   *
    * @param symbol
    * @param producType
    * @param granularity
@@ -91,6 +94,7 @@ public interface BitgetFutures {
 
   /**
    * Get historical mark price candle data.
+   *
    * @param symbol
    * @param producType
    * @param granularity

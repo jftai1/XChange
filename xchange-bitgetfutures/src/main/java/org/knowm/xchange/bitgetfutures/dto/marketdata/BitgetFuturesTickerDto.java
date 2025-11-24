@@ -76,9 +76,9 @@ public class BitgetFuturesTickerDto {
   private BigDecimal holdingAmount;
 
   /**
-   * Entry price of the last 24 hours
-   * The opening time is compared on a 24-hour basis. i.e.:
-   * Now it is 7:00 PM of the 2nd day of the month, then the corresponding opening time is 7:00 PM of the 1st day of the month.
+   * Entry price of the last 24 hours The opening time is compared on a 24-hour basis. i.e.: Now it
+   * is 7:00 PM of the 2nd day of the month, then the corresponding opening time is 7:00 PM of the
+   * 1st day of the month.
    */
   @JsonProperty("open24h")
   private BigDecimal open24h;

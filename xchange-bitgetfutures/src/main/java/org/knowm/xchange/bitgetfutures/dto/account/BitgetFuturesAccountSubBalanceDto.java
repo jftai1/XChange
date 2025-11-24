@@ -13,6 +13,7 @@ import org.knowm.xchange.currency.Currency;
 @Builder
 @Jacksonized
 public class BitgetFuturesAccountSubBalanceDto {
+
   /**
    * Coin name
    */
@@ -27,8 +28,7 @@ public class BitgetFuturesAccountSubBalanceDto {
   private BigDecimal balance;
 
   /**
-   * Maximum transferable amount.
-   * Unit: current coin
+   * Maximum transferable amount. Unit: current coin
    */
   @JsonProperty("available")
   private BigDecimal available;

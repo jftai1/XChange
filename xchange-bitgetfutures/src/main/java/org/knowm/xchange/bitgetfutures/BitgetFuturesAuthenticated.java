@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import org.knowm.xchange.bitget.dto.BitgetException;
 import org.knowm.xchange.bitget.dto.BitgetResponse;
-import org.knowm.xchange.bitget.dto.account.BitgetBalanceDto;
 import org.knowm.xchange.bitget.dto.account.BitgetDepositWithdrawRecordDto;
 import org.knowm.xchange.bitget.dto.account.BitgetMainSubTransferRecordDto;
-import org.knowm.xchange.bitget.dto.account.BitgetSubBalanceDto;
 import org.knowm.xchange.bitget.dto.account.BitgetTransferRecordDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderParamsDto;
 import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderResponseDto;
@@ -36,6 +34,7 @@ public interface BitgetFuturesAuthenticated {
 
   /**
    * Query all account information under a certain product type.
+   *
    * @param apiKey
    * @param signer
    * @param passphrase
@@ -59,6 +58,7 @@ public interface BitgetFuturesAuthenticated {
 
   /**
    * Query the contract asset information of all sub-accounts.
+   *
    * @param apiKey
    * @param signer
    * @param passphrase

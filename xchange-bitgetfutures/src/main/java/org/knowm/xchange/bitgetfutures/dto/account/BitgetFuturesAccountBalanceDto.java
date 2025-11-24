@@ -50,8 +50,7 @@ public class BitgetFuturesAccountBalanceDto {
   private BigDecimal maxTransferOut;
 
   /**
-   * Account equity (margin coin),
-   * Includes unrealized PnL (based on mark price).
+   * Account equity (margin coin), Includes unrealized PnL (based on mark price).
    */
   @JsonProperty("accountEquity")
   private BigDecimal accountEquity;

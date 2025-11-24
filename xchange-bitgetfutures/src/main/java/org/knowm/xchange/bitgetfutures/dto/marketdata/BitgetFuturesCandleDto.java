@@ -24,9 +24,8 @@ public class BitgetFuturesCandleDto {
    */
   private BigDecimal entryPrice;
   /**
-   * Exit price.
-   * The latest exit price may be updated in the future.
-   * Subscribe to WebSocket to track the latest price.
+   * Exit price. The latest exit price may be updated in the future. Subscribe to WebSocket to track
+   * the latest price.
    */
   private BigDecimal exitPrice;
   /**

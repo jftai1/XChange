@@ -3,7 +3,9 @@ package org.knowm.xchange.bitgetfutures.config.converter;
 import com.fasterxml.jackson.databind.util.StdConverter;
 import org.apache.commons.lang3.BooleanUtils;
 
-/** Converts string value to {@code Boolean} */
+/**
+ * Converts string value to {@code Boolean}
+ */
 public class StringToBooleanConverter extends StdConverter<String, Boolean> {
 
   @Override
