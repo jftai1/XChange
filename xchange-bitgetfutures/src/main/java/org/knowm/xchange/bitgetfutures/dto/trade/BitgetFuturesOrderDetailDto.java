@@ -233,9 +233,10 @@ public class BitgetFuturesOrderDetailDto {
    * strategy_oco_limit: Strategy-OCO Limit Order strategy_oco_trigger: Strategy-OCO Trigger Order
    * modify_order_limit: Limit Modify Order strategy_regular_buy: Strategy-Regular Buy
    * strategy_grid_middle: Strategy-Neutral Grid
+   * TODO OrderSource does not have all values.
    */
   @JsonProperty("orderSource")
-  private OrderSource orderSource;
+  private String orderSource;
 
   /**
    * Cancel reason

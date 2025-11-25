@@ -25,6 +25,8 @@ import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDto;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesSubAccountBalanceDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -95,13 +97,14 @@ public interface BitgetFuturesAuthenticated {
   @POST
   @Path("api/v2/spot/trade/place-order")
   @Consumes(MediaType.APPLICATION_JSON)
-  BitgetResponse<BitgetOrderInfoDto> createOrder(
+  BitgetFuturesResponse<BitgetFuturesOrderInfoDto> createOrder(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      BitgetPlaceOrderDto bitgetPlaceOrderDto)
-      throws IOException, BitgetException;
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesPlaceOrderDto bitgetPlaceOrderDto)
+      throws IOException, BitgetFuturesException;
 
   @POST
   @Path("api/v2/spot/trade/cancel-order")
