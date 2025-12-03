@@ -10,20 +10,12 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
-import org.knowm.xchange.bitget.dto.BitgetException;
-import org.knowm.xchange.bitget.dto.BitgetResponse;
-import org.knowm.xchange.bitget.dto.account.BitgetDepositWithdrawRecordDto;
-import org.knowm.xchange.bitget.dto.account.BitgetMainSubTransferRecordDto;
-import org.knowm.xchange.bitget.dto.account.BitgetTransferRecordDto;
-import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderParamsDto;
-import org.knowm.xchange.bitget.dto.trade.BitgetCancelOrderResponseDto;
-import org.knowm.xchange.bitget.dto.trade.BitgetFillDto;
-import org.knowm.xchange.bitget.dto.trade.BitgetOrderInfoDto;
-import org.knowm.xchange.bitget.dto.trade.BitgetPlaceOrderDto;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDto;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesSubAccountBalanceDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesCancelOrderParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
@@ -94,8 +86,25 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("clientOid") String clientOid)
       throws IOException, BitgetFuturesException;
 
+  @GET
+  @Path("api/v2/mix/order/fills")
+  BitgetFuturesResponse<List<BitgetFuturesFillDto>> fills(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      @QueryParam("orderId") String orderId,
+      @QueryParam("symbol") String symbol,
+      @QueryParam("productType") String productType,
+      @QueryParam("idLessThan") String idLessThan,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
+      throws IOException, BitgetFuturesException;
+
   @POST
-  @Path("api/v2/spot/trade/place-order")
+  @Path("api/v2/mix/order/place-order")
   @Consumes(MediaType.APPLICATION_JSON)
   BitgetFuturesResponse<BitgetFuturesOrderInfoDto> createOrder(
       @HeaderParam("ACCESS-KEY") String apiKey,
@@ -107,126 +116,33 @@ public interface BitgetFuturesAuthenticated {
       throws IOException, BitgetFuturesException;
 
   @POST
-  @Path("api/v2/spot/trade/cancel-order")
+  @Path("api/v2/mix/order/cancel-order")
   @Consumes(MediaType.APPLICATION_JSON)
-  BitgetResponse<BitgetCancelOrderResponseDto> cancelOrder(
+  BitgetFuturesResponse<BitgetFuturesCancelOrderParamsDto> cancelOrder(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      BitgetCancelOrderParamsDto bitgetCancelOrderParamsDto)
-      throws IOException, BitgetException;
+      BitgetFuturesCancelOrderParamsDto bitgetCancelOrderParamsDto)
+      throws IOException, BitgetFuturesException;
 
   @GET
-  @Path("api/v2/spot/trade/fills")
-  BitgetResponse<List<BitgetFillDto>> fills(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("symbol") String symbol,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("orderId") String orderId,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/account/transferRecords")
-  BitgetResponse<List<BitgetTransferRecordDto>> transferRecords(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("coin") String currency,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("clientOid") String clientOid,
-      @QueryParam("fromType") String fromType,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/account/sub-main-trans-record")
-  BitgetResponse<List<BitgetMainSubTransferRecordDto>> mainSubTransferRecords(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("coin") String currency,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("clientOid") String clientOid,
-      @QueryParam("role") String role,
-      @QueryParam("subUid") String subAccountUid,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/wallet/deposit-records")
-  BitgetResponse<List<BitgetDepositWithdrawRecordDto>> depositRecords(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("coin") String currency,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("orderId") String orderId,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/wallet/subaccount-deposit-records")
-  BitgetResponse<List<BitgetDepositWithdrawRecordDto>> subDepositRecords(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("coin") String currency,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("subUid") String subAccountUid,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/wallet/withdrawal-records")
-  BitgetResponse<List<BitgetDepositWithdrawRecordDto>> withdrawalRecords(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @QueryParam("coin") String currency,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("orderId") String orderId,
-      @QueryParam("clientOid") String clientOid,
-      @QueryParam("startTime") Long startTime,
-      @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan)
-      throws IOException, BitgetException;
-
-  @GET
-  @Path("api/v2/spot/trade/unfilled-orders")
-  BitgetResponse<List<BitgetOrderInfoDto>> unfilledOrders(
+  @Path("api/v2/mix/order/orders-pending")
+  BitgetFuturesResponse<List<BitgetFuturesOrderInfoDto>> pendingOrders(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
       @HeaderParam("paptrading") String demo,
+      @QueryParam("orderId") String orderId,
+      @QueryParam("clientOid") String clientOid,
       @QueryParam("symbol") String symbol,
-      @QueryParam("limit") Integer limit,
-      @QueryParam("requestTime") Long requestTime,
+      @QueryParam("productType") String productType,
+      @QueryParam("status") String status,
+      @QueryParam("idLessThan") String idLessThan,
       @QueryParam("startTime") Long startTime,
       @QueryParam("endTime") Long endTime,
-      @QueryParam("idLessThan") String idLessThan,
-      @QueryParam("orderId") String orderId,
-      @QueryParam("tpslType") String tpslType,
-      @QueryParam("receiveWindow") Long receiveWindow)
-      throws IOException, BitgetException;
+      @QueryParam("limit") Integer limit)
+      throws IOException, BitgetFuturesException;
+
 }
