@@ -10,13 +10,25 @@ import java.util.List;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesServerTime;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public interface BitgetFutures {
 
-  // Market
+  @GET
+  @Path("api/v2/public/time")
+  BitgetFuturesResponse<BitgetFuturesServerTime> serverTime() throws IOException, BitgetFuturesException;
+
+  /**
+   * Get ticker data of the given 'productType' and 'symbol'
+   * @param symbol
+   * @param producType
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/market/ticker")
   BitgetFuturesResponse<BitgetFuturesTickerDto> ticker(
@@ -24,6 +36,13 @@ public interface BitgetFutures {
       @QueryParam("productType") String producType)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Get all ticker data of the given 'productType'
+   * @param producType
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/market/tickers")
   BitgetFuturesResponse<List<BitgetFuturesTickerDto>> tickers(
@@ -31,6 +50,32 @@ public interface BitgetFutures {
       throws IOException, BitgetFuturesException;
 
 
+  /**
+   * Get Candlestick data.
+   * By default, 100 records are returned.
+   * If there is no data, an empty array is returned.
+   * The queryable data history varies depending on the k-line granularity.
+   *
+   * The rules are as follows:
+   * 1m, 3m, and 5m can be checked for up to one month;
+   * 15m can be checked for up to 52 days;
+   * 30m can be searched for up to 62 days;
+   * 1H can be checked for up to 83 days;
+   * 2H can be checked for up to 120 days;
+   * 4H can be checked for up to 240 days;
+   * 6H can be checked for up to 360 days
+   *
+   * @param symbol
+   * @param producType
+   * @param granularity
+   * @param startTime
+   * @param endTime
+   * @param kLineType
+   * @param limit
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/market/candles")
   BitgetFuturesResponse<List<BitgetFuturesCandleDto>> candles(
