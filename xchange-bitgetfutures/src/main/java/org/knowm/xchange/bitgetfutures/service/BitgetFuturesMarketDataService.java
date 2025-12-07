@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import org.knowm.xchange.bitget.BitgetAdapters;
 import org.knowm.xchange.bitget.BitgetErrorAdapter;
 import org.knowm.xchange.bitget.BitgetExchange;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
+import org.knowm.xchange.bitgetfutures.BitgetFuturesErrorAdapter;
+import org.knowm.xchange.bitgetfutures.BitgetFuturesProductType;
 import org.knowm.xchange.bitgetfutures.config.Config;
 import org.knowm.xchange.bitget.dto.BitgetException;
 import org.knowm.xchange.bitget.dto.marketdata.BitgetCandleDto;
@@ -22,10 +25,9 @@ import org.knowm.xchange.bitget.service.params.BitgetCandleStickHistoryParams;
 import org.knowm.xchange.bitget.service.params.BitgetCandleStickParams;
 import org.knowm.xchange.bitget.service.params.BitgetCandleStickParamsFactory;
 import org.knowm.xchange.bitget.service.params.BitgetCandleStickRecentParams;
-import org.knowm.xchange.bitgetfutures.BitgetFutures;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
-import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesMarketDataTickerParams;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.OrderBook;
@@ -62,12 +64,32 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
     return ExchangeHealth.OFFLINE;
   }
 
+  /**
+   * Bitget Futures Product Type may be specified as an argument.
+   * If not BitgetExchange.DEFAULT_PRODUCT_TYPE will be used.
+   * @param instrument
+   * @param args BitgetFuturesProductType may be passed as an argument
+   * @return
+   * @throws IOException
+   */
   @Override
   public Ticker getTicker(Instrument instrument, Object... args) throws IOException {
     try {
-      BitgetFuturesAdapters.adaptTicker();
+      BitgetFuturesProductType futuresProductType = null;
+      if (args != null && args.length > 0) {
+        for (Object arg : args) {
+          if (arg instanceof BitgetFuturesProductType) {
+            futuresProductType = (BitgetFuturesProductType) arg;
+            break;
+          }
+        }
+      }
+      if (futuresProductType == null) {
+        futuresProductType = exchange.getDefaultProductType();
+      }
+      return BitgetFuturesAdapters.toTicker(getBitgetTickerDto(futuresProductType,instrument),instrument);
     } catch (BitgetFuturesException e) {
-      // TODO
+      throw BitgetFuturesErrorAdapter.adapt(e);
     }
   }
 
@@ -75,6 +97,27 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
   public List<Ticker> getTickers(Params params) throws IOException {
     try {
       List<Ticker>tickers = new ArrayList<Ticker>();
+      BitgetFuturesProductType futuresProductType = null;
+      Collection<Instrument> instruments = new ArrayList<Instrument>();
+
+      if (params instanceof BitgetFuturesMarketDataTickerParams) {
+        futuresProductType = ((BitgetFuturesMarketDataTickerParams) params).getFuturesProductType();
+        instruments = ((BitgetFuturesMarketDataTickerParams) params).getInstruments();
+      }else {
+        futuresProductType = exchange.getDefaultProductType();
+      }
+
+      tickers.addAll(getBitgetTickerDtos(futuresProductType).stream()
+          .map(futuresTtickerDto -> {
+            Instrument instrument = BitgetFuturesAdapters.toInstrument(futuresTtickerDto.getSymbol());
+            return instruments.contains(instrument) ?
+                BitgetFuturesAdapters.toTicker(tickerDto, instrument) : null;
+
+              }
+
+          )
+
+
 
       if (params instanceof CurrencyPairsParam) {
         for (CurrencyPair currencyPair : ((CurrencyPairsParam) params).getCurrencyPairs()) {

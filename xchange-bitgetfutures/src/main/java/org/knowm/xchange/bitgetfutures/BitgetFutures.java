@@ -10,6 +10,7 @@ import java.util.List;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesServerTime;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 
@@ -20,6 +21,13 @@ public interface BitgetFutures {
   @GET
   @Path("api/v2/public/time")
   BitgetFuturesResponse<BitgetFuturesServerTime> serverTime() throws IOException, BitgetFuturesException;
+
+  @GET
+  @Path("api/v2/mix/market/contracts")
+  BitgetFuturesResponse<List<BitgetFuturesContractDto>> futuresContracts(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("productType") String producType)
+      throws IOException, BitgetFuturesException;
 
   /**
    * Get ticker data of the given 'productType' and 'symbol'

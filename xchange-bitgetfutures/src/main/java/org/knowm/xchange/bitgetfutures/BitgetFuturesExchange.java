@@ -1,6 +1,8 @@
 package org.knowm.xchange.bitgetfutures;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,11 +13,21 @@ import org.knowm.xchange.bitget.service.BitgetAccountService;
 import org.knowm.xchange.bitget.service.BitgetMarketDataService;
 import org.knowm.xchange.bitget.service.BitgetMarketDataServiceRaw;
 import org.knowm.xchange.bitget.service.BitgetTradeService;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataServiceRaw;
 import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
 
 public class BitgetFuturesExchange extends BaseExchange {
+
+  /**
+   * Exchange product types;
+   */
+  private List<BitgetFuturesProductType>exchangeProductTypes = Arrays.asList(
+      BitgetFuturesProductType.COIN_FUTURES,
+      BitgetFuturesProductType.USDC_FUTURES,
+      BitgetFuturesProductType.USDT_FUTURES);
 
   @Override
   protected void initServices() {
@@ -35,30 +47,39 @@ public class BitgetFuturesExchange extends BaseExchange {
 
   @Override
   public void remoteInit() throws IOException {
-    BitgetMarketDataServiceRaw bitgetMarketDataServiceRaw =
-        (BitgetMarketDataServiceRaw) marketDataService;
+    BitgetFuturesMarketDataServiceRaw bitgetMarketDataServiceRaw =
+        (BitgetFuturesMarketDataServiceRaw) marketDataService;
 
-    // initialize symbol mappings
-    List<BitgetSymbolDto> bitgetSymbolDtos = bitgetMarketDataServiceRaw.getBitgetSymbolDtos(null);
-    bitgetSymbolDtos.forEach(
-        bitgetSymbolDto -> {
-          BitgetAdapters.putSymbolMapping(
-              bitgetSymbolDto.getSymbol(), bitgetSymbolDto.getCurrencyPair());
-        });
+    List<BitgetFuturesContractDto> bitgetFuturesContractDtosAll = new ArrayList<BitgetFuturesContractDto>();
 
-    // initialize instrument metadata
+    // Get all contracts
+    for (BitgetFuturesProductType bitgetFuturesProductType : exchangeProductTypes) {
+      List<BitgetFuturesContractDto> bitgetFuturesContractDtos = bitgetMarketDataServiceRaw.getBitgetFuturesContracts(bitgetFuturesProductType);
+      bitgetFuturesContractDtosAll.addAll(bitgetFuturesContractDtos);
+    }
+
+    // Initialize all instruments metadata
     Map<Instrument, InstrumentMetaData> instruments =
-        bitgetSymbolDtos.stream()
+        bitgetFuturesContractDtosAll.stream()
             .collect(
                 Collectors.toMap(
-                    BitgetSymbolDto::getCurrencyPair, BitgetAdapters::toInstrumentMetaData));
+                    BitgetFuturesContractDto::getFuturesContract, BitgetFuturesAdapters::toInstrumentMetaData
+                )
+            );
 
-    exchangeMetaData = new ExchangeMetaData(instruments, null, null, null, null);
   }
 
   public boolean usingSandbox() {
     return Boolean.TRUE.equals(
         exchangeSpecification.getExchangeSpecificParametersItem(USE_SANDBOX));
+  }
+
+  /**
+   * TODO May be part of Exchange Configuration parameters.
+   * @return
+   */
+  public BitgetFuturesProductType getDefaultProductType(){
+    return BitgetFuturesProductType.USDT_FUTURES;
   }
 
 }

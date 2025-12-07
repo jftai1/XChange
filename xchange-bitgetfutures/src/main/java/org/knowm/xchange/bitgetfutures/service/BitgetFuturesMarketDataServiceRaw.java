@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
+import org.knowm.xchange.bitgetfutures.BitgetFuturesProductType;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesServerTime;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.derivative.FuturesContract;
@@ -21,15 +23,31 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
     return bitget.serverTime().getData();
   }
 
-  public BitgetFuturesTickerDto getBitgetTickerDto(Instrument instrument, BitgetFuturesProducType productType)
-      throws IOException {
-    return bitget.ticker(
-        productType.getCode()).getData();
+  public List<BitgetFuturesContractDto> getBitgetFuturesContracts(
+      BitgetFuturesProductType futuresProductType) throws IOException {
+    return bitget.futuresContracts(
+        null,
+        futuresProductType.getCode()).getData();
   }
 
-  public List<BitgetFuturesTickerDto> getBitgetTickerDtos(BitgetFuturesProducType productType)
+
+  public List<BitgetFuturesContractDto> getBitgetFuturesContracts(
+      BitgetFuturesProductType futuresProductType, Instrument instrument) throws IOException {
+    return bitget.futuresContracts(
+        BitgetFuturesAdapters.toSymbolString(instrument),
+        futuresProductType.getCode()).getData();
+  }
+
+  public BitgetFuturesTickerDto getBitgetTickerDto(BitgetFuturesProductType futuresProductType, Instrument instrument)
       throws IOException {
-    return bitget.tickers(productType.getCode()).getData();
+    return bitget.ticker(
+        BitgetFuturesAdapters.toSymbolString(instrument),
+        futuresProductType.getCode()).getData();
+  }
+
+  public List<BitgetFuturesTickerDto> getBitgetTickerDtos(BitgetFuturesProductType futuresProductType)
+      throws IOException {
+    return bitget.tickers(futuresProductType.getCode()).getData();
   }
 
   public List<BitgetFuturesCandleDto> getBitgetRecentCandleDtos(FuturesContract futuresContract,
