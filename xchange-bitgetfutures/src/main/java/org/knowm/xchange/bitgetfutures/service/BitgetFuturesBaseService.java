@@ -8,7 +8,7 @@ import org.knowm.xchange.client.ExchangeRestProxyBuilder;
 import org.knowm.xchange.service.BaseExchangeService;
 import org.knowm.xchange.service.BaseService;
 
-public class BitgetBaseService extends BaseExchangeService<BitgetFuturesExchange> implements BaseService {
+public class BitgetFuturesBaseService extends BaseExchangeService<BitgetFuturesExchange> implements BaseService {
 
   protected final String apiKey;
   protected final String passphrase;
@@ -16,7 +16,7 @@ public class BitgetBaseService extends BaseExchangeService<BitgetFuturesExchange
   protected final BitgetFuturesAuthenticated bitgetAuthenticated;
   protected final BitgetFuturesDigest bitgetDigest;
 
-  public BitgetBaseService(BitgetFuturesExchange exchange) {
+  public BitgetFuturesBaseService(BitgetFuturesExchange exchange) {
     super(exchange);
     bitget =
         ExchangeRestProxyBuilder.forInterface(BitgetFutures.class, exchange.getExchangeSpecification())

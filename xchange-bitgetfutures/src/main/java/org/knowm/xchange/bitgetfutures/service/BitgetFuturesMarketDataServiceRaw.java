@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
-import org.knowm.xchange.bitgetfutures.BitgetFuturesProductType;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesServerTime;
@@ -13,7 +12,7 @@ import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.derivative.FuturesContract;
 import org.knowm.xchange.instrument.Instrument;
 
-public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
+public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService {
 
   public BitgetFuturesMarketDataServiceRaw(BitgetFuturesExchange exchange) {
     super(exchange);
@@ -51,6 +50,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
   }
 
   public List<BitgetFuturesCandleDto> getBitgetRecentCandleDtos(FuturesContract futuresContract,
+      BitgetFuturesProductType productType,
       BitgetFuturesCandleStickPeriodType periodType,
       BitgetFuturesCandleChartType chartType,
       Date startTime,
@@ -60,7 +60,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
     limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candles(
         BitgetFuturesAdapters.toSymbolString(futuresContract),
-        BitgetFuturesAdapters.toProductTypeString(futuresContract),
+        productType.getCode(),
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),
@@ -69,6 +69,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
   }
 
   public List<BitgetFuturesCandleDto> getBitgetCandleHistoryDtos(FuturesContract futuresContract,
+      BitgetFuturesProductType productType,
       BitgetFuturesCandleStickPeriodType periodType,
       Date startTime,
       Date endTime,
@@ -77,7 +78,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetBaseService {
     limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candlesHistory(
         BitgetFuturesAdapters.toSymbolString(futuresContract),
-        BitgetFuturesAdapters.toProductTypeString(futuresContract),
+        productType.getCode(),
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),

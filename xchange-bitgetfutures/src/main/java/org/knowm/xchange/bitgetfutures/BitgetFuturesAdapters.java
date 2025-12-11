@@ -1,14 +1,21 @@
 package org.knowm.xchange.bitgetfutures;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
+import org.knowm.xchange.bitgetfutures.derivative.BitgetFuturesContract;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
+import org.knowm.xchange.dto.marketdata.CandleStick;
+import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
@@ -27,12 +34,12 @@ public class BitgetFuturesAdapters {
     return SYMBOL_TO_CURRENCY_PAIR.get(symbol);
   }
 
-  public Ticker toTicker(BitgetFuturesTickerDto bitgetFuturesTickerDto, Instrument instrument) {
-    if (bitgetFuturesTickerDto == null || instrument == null) {
+  public Ticker toTicker(BitgetFuturesTickerDto bitgetFuturesTickerDto) {
+    if (bitgetFuturesTickerDto == null) {
       return null;
     }
     Ticker.Builder builder = new Ticker.Builder();
-    builder.instrument(instrument);
+    builder.instrument(toInstrument(bitgetFuturesTickerDto));
     builder.last(bitgetFuturesTickerDto.getLastPrice());
     builder.ask(bitgetFuturesTickerDto.getBestAskPrice());
     builder.askSize(bitgetFuturesTickerDto.getBestAskSize());
@@ -46,11 +53,19 @@ public class BitgetFuturesAdapters {
     return builder.build();
   }
 
+  public Instrument toInstrument(BitgetFuturesTickerDto bitgetFuturesTickerDto) {
+    return SYMBOL_TO_CURRENCY_PAIR.get(bitgetFuturesTickerDto.getSymbol());
+  }
+
   public InstrumentMetaData toInstrumentMetaData(BitgetFuturesContractDto bitgetFuturesContractDto) {
     InstrumentMetaData.Builder builder =
         new InstrumentMetaData.Builder()
             .minimumAmount(bitgetFuturesContractDto.getMinTradeNum());
     return builder.build();
+  }
+
+  public FuturesContract toFuturesContract(CurrencyPair currencyPair) {
+      return new BitgetFuturesContract(currencyPair);
   }
 
   public String toProductTypeString(FuturesContract future) {
@@ -61,6 +76,22 @@ public class BitgetFuturesAdapters {
     return instrument == null
         ? null
         : (instrument.getBase().toString() + instrument.getCounter().toString()).toUpperCase();
+  }
+
+  public CandleStickData toCandleStickData(CurrencyPair currencyPair, List<BitgetFuturesCandleDto> bitgetCandleDtos) {
+    return new CandleStickData(
+        currencyPair,
+        bitgetCandleDtos.stream()
+            .map(dto -> new CandleStick.Builder()
+                .timestamp(Optional.ofNullable(dto.getTimestamp()).map(Date::from).orElse(null))
+                .open(dto.getEntryPrice())
+                .close(dto.getExitPrice())
+                .low(dto.getLowestPrice())
+                .high(dto.getHighestPrice())
+                .volume(dto.getTradingVolumneBaseCurrency())
+                .quotaVolume(dto.getTradingVolumneQuoteCurrency())
+                .build())
+            .collect(Collectors.toList()));
   }
 
 

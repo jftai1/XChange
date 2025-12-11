@@ -11,7 +11,8 @@ public enum BitgetFuturesCandleStickPeriodType {
   CANDLE_STICK_30M(30, "30m"),
   CANDLE_STICK_1H(60, "1H"),
   CANDLE_STICK_2H(2 * 60, "2H"),
-  CANDLE_STICK_4H(4 * 60, "4H");
+  CANDLE_STICK_4H(4 * 60, "4H"),
+  CANDLE_STICK_6H(6 * 60, "6H");
 
   /* Period in seconds  */
   private final long periodInSeconds;
