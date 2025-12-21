@@ -18,10 +18,24 @@ import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 @Produces(MediaType.APPLICATION_JSON)
 public interface BitgetFutures {
 
+  /**
+   * Getting server time,Unix millisecond timestamp
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/public/time")
   BitgetFuturesResponse<BitgetFuturesServerTime> serverTime() throws IOException, BitgetFuturesException;
 
+  /**
+   * Interface is used to get future contract details.
+   * @param symbol
+   * @param producType required
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/market/contracts")
   BitgetFuturesResponse<List<BitgetFuturesContractDto>> futuresContracts(
@@ -31,8 +45,8 @@ public interface BitgetFutures {
 
   /**
    * Get ticker data of the given 'productType' and 'symbol'
-   * @param symbol
-   * @param producType
+   * @param symbol required
+   * @param producType required
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -46,7 +60,7 @@ public interface BitgetFutures {
 
   /**
    * Get all ticker data of the given 'productType'
-   * @param producType
+   * @param producType required
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -56,7 +70,6 @@ public interface BitgetFutures {
   BitgetFuturesResponse<List<BitgetFuturesTickerDto>> tickers(
       @QueryParam("productType") String producType)
       throws IOException, BitgetFuturesException;
-
 
   /**
    * Get Candlestick data.
@@ -73,13 +86,13 @@ public interface BitgetFutures {
    * 4H can be checked for up to 240 days;
    * 6H can be checked for up to 360 days
    *
-   * @param symbol
-   * @param producType
-   * @param granularity
-   * @param startTime
-   * @param endTime
-   * @param kLineType
-   * @param limit
+   * @param symbol required
+   * @param producType required
+   * @param granularity required
+   * @param startTime optional
+   * @param endTime optional
+   * @param kLineType optional
+   * @param limit optional
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -99,12 +112,12 @@ public interface BitgetFutures {
   /**
    * Query all historical K-line data and return a maximum of 200 pieces of data.
    *
-   * @param symbol
-   * @param producType
-   * @param granularity
-   * @param startTime
-   * @param endTime
-   * @param limit
+   * @param symbol required
+   * @param producType required
+   * @param granularity required
+   * @param startTime optional
+   * @param endTime optional
+   * @param limit optional
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -124,12 +137,12 @@ public interface BitgetFutures {
    * Query the historical K-line data of contract index price, and return a maximum of 200 pieces of
    * data.
    *
-   * @param symbol
-   * @param producType
-   * @param granularity
-   * @param startTime
-   * @param endTime
-   * @param limit
+   * @param symbol required
+   * @param producType required
+   * @param granularity required
+   * @param startTime optional
+   * @param endTime optional
+   * @param limit optional
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -148,12 +161,12 @@ public interface BitgetFutures {
   /**
    * Get historical mark price candle data.
    *
-   * @param symbol
-   * @param producType
-   * @param granularity
-   * @param startTime
-   * @param endTime
-   * @param limit
+   * @param symbol required
+   * @param producType required
+   * @param granularity required
+   * @param startTime optional
+   * @param endTime optional
+   * @param limit optional
    * @return
    * @throws IOException
    * @throws BitgetFuturesException

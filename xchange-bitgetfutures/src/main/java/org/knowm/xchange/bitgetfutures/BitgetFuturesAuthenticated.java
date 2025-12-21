@@ -29,12 +29,12 @@ public interface BitgetFuturesAuthenticated {
   /**
    * Query all account information under a certain product type.
    *
-   * @param apiKey
-   * @param signer
-   * @param passphrase
-   * @param timestamp
-   * @param demo
-   * @param productType
+   * @param apiKey required
+   * @param signer required
+   * @param passphrase required
+   * @param timestamp required
+   * @param demo optional 1 for demo
+   * @param productType required
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
@@ -51,27 +51,20 @@ public interface BitgetFuturesAuthenticated {
       throws IOException, BitgetFuturesException;
 
   /**
-   * Query the contract asset information of all sub-accounts.
-   *
-   * @param apiKey
-   * @param signer
-   * @param passphrase
-   * @param timestamp
+   * Get order detail
+   * @param apiKey required
+   * @param signer required
+   * @param passphrase required
+   * @param timestamp required
+   * @param demo optional 1 for demo
+   * @param symbol required
+   * @param productType required
+   * @param orderId optional (orderId or clientOid)
+   * @param clientOid optional (orderId or clientOid)
    * @return
    * @throws IOException
    * @throws BitgetFuturesException
    */
-  @GET
-  @Path("api/v2/mix/account/sub-account-assets")
-  BitgetFuturesResponse<List<BitgetFuturesSubAccountBalanceDto>> subBalances(
-      @HeaderParam("ACCESS-KEY") String apiKey,
-      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
-      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
-      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
-      @HeaderParam("paptrading") String demo,
-      @QueryParam("productType") String productType)
-      throws IOException, BitgetFuturesException;
-
   @GET
   @Path("api/v2/mix/order/detail")
   BitgetFuturesResponse<List<BitgetFuturesOrderDetailDto>> orderDetail(
@@ -144,5 +137,46 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("endTime") Long endTime,
       @QueryParam("limit") Integer limit)
       throws IOException, BitgetFuturesException;
+
+  /**
+   * Get history order(It only supports to get the data within 90days. The older data can be downloaded from web)
+   *
+   * @param apiKey required
+   * @param signer required
+   * @param passphrase required
+   * @param timestamp required
+   * @param demo optional 1 for demo
+   * @param orderId optional (orderId or clientOid If both orderId and clientOid are entered, orderId prevails.)
+   * @param clientOid optional (orderId or clientOid If both orderId and clientOid are entered, orderId prevails.)
+   * @param symbol optional
+   * @param productType required
+   * @param idLessThan optional
+   * @param orderSource optional
+   * @param startTime optional
+   * @param endTime optional
+   * @param limit optional
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
+  @GET
+  @Path("api/v2/mix/order/orders-history")
+  BitgetFuturesResponse<List<BitgetFuturesOrderInfoDto>> orderHistory(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      @QueryParam("orderId") String orderId,
+      @QueryParam("clientOid") String clientOid,
+      @QueryParam("symbol") String symbol,
+      @QueryParam("productType") String productType,
+      @QueryParam("idLessThan") String idLessThan,
+      @QueryParam("orderSource") String orderSource,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
+      throws IOException, BitgetFuturesException;
+
 
 }

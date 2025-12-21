@@ -1,0 +1,11 @@
+### Get Account Assets (USDT-FUTURES) demo
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+GET {{api_host}}/api/v2/mix/account/accounts?productType=USDT-FUTURES
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+paptrading: 1

@@ -1,0 +1,35 @@
+### Get Futures Contracts (USDC-FUTURES)
+GET {{api_host}}/api/v2/mix/market/contracts?productType=USDC-FUTURES
+
+### Get Futures Contracts (USDT-FUTURES)
+GET {{api_host}}/api/v2/mix/market/contracts?productType=USDT-FUTURES
+
+### Get Futures Contracts (COIN-FUTURES)
+GET {{api_host}}/api/v2/mix/market/contracts?productType=COIN-FUTURES
+
+### Get Futures Contracts (USDT-FUTURES, BTCUSDT)
+GET {{api_host}}/api/v2/mix/market/contracts?productType=USDT-FUTURES&symbol=BTCUSDT
+
+### Get Ticker
+GET {{api_host}}/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=BTCUSDT
+
+### Get Tickers
+GET {{api_host}}/api/v2/mix/market/tickers?productType=USDT-FUTURES
+
+### Get Candlestick Data (1H)
+GET {{api_host}}/api/v2/mix/market/candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=1H
+
+### Get Candlestick Data (5m)
+GET {{api_host}}/api/v2/mix/market/candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=5m
+
+### Get Historical Candlestick Data (1H)
+GET {{api_host}}/api/v2/mix/market/history-candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=1H
+
+### Get Historical Candlestick Data (5m)
+GET {{api_host}}/api/v2/mix/market/history-candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=5m
+
+### Get Historical Index Price Candlestick (1H)
+GET {{api_host}}/api/v2/mix/market/history-index-candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=1H
+
+### Get Historical Mark Price Candlestick (1H)
+GET {{api_host}}/api/v2/mix/market/history-mark-candles?productType=USDT-FUTURES&symbol=BTCUSDT&granularity=1H
