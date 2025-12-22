@@ -1,21 +1,21 @@
-### Get History Order (USDT-FUTURES) demo
+### Get All Positions (USDT-FUTURES) demo
 < {%
   import {gen_sign} from 'sign.js'
   gen_sign(request);
 %}
-GET {{api_host}}/api/v2/mix/order/orders-history?productType=USDT-FUTURES&symbol=BTCUSDT
+GET {{api_host}}/api/v2/mix/position/all-position?productType=USDT-FUTURES
 ACCESS-KEY: {{api_key}}
 ACCESS-SIGN: {{sign}}
 ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
 
-### Get Order Fills (USDT-FUTURES) demo
+### Get Historical Positions (USDT-FUTURES) demo
 < {%
   import {gen_sign} from 'sign.js'
   gen_sign(request);
 %}
-GET {{api_host}}/api/v2/mix/order/fills?productType=USDT-FUTURES&symbol=BTCUSDT
+GET {{api_host}}/api/v2/mix/position/history-position
 ACCESS-KEY: {{api_key}}
 ACCESS-SIGN: {{sign}}
 ACCESS-TIMESTAMP: {{timestamp}}

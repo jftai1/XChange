@@ -79,6 +79,24 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("clientOid") String clientOid)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Get order fill details
+   * @param apiKey required
+   * @param signer required
+   * @param passphrase required
+   * @param timestamp required
+   * @param demo optional 1 for demo
+   * @param orderId optional
+   * @param symbol optional
+   * @param productType required
+   * @param idLessThan optional
+   * @param startTime optional
+   * @param endTime optional
+   * @param limit optional
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/order/fills")
   BitgetFuturesResponse<List<BitgetFuturesFillDto>> fills(
@@ -176,6 +194,19 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("startTime") Long startTime,
       @QueryParam("endTime") Long endTime,
       @QueryParam("limit") Integer limit)
+      throws IOException, BitgetFuturesException;
+
+  @GET
+  @Path("api/v2/mix/position/all-position")
+  BitgetFuturesResponse<List<BitgetFuturesAccountBalanceDto>> positions(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      @QueryParam("productType") String productType,
+      @QueryParam("marginCoin") String marginCoin
+  )
       throws IOException, BitgetFuturesException;
 
 
