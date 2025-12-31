@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto.SymbolType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataServiceRaw;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
+import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
 
@@ -21,9 +23,9 @@ public class BitgetFuturesExchange extends BaseExchange {
    * Exchange product types;
    */
   private List<org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType>exchangeProductTypes = Arrays.asList(
-      org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType.COIN_FUTURES,
-      org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType.USDC_FUTURES,
-      org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType.USDT_FUTURES);
+      BitgetFuturesProductType.COIN_FUTURES,
+      BitgetFuturesProductType.USDC_FUTURES,
+      BitgetFuturesProductType.USDT_FUTURES);
 
   @Override
   protected void initServices() {
@@ -37,7 +39,7 @@ public class BitgetFuturesExchange extends BaseExchange {
     ExchangeSpecification specification = new ExchangeSpecification(getClass());
     specification.setSslUri("https://api.bitget.com");
     specification.setHost("www.bitget.com");
-    specification.setExchangeName("Bitget");
+    specification.setExchangeName("BitgetFutures");
     return specification;
   }
 
@@ -48,13 +50,25 @@ public class BitgetFuturesExchange extends BaseExchange {
 
     List<BitgetFuturesContractDto> bitgetFuturesContractDtosAll = new ArrayList<BitgetFuturesContractDto>();
 
-    // Get all contracts
-    for (org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType bitgetFuturesProductType : exchangeProductTypes) {
+    // Get all perpetual contracts
+    for (BitgetFuturesProductType bitgetFuturesProductType : exchangeProductTypes) {
       List<BitgetFuturesContractDto> bitgetFuturesContractDtos = bitgetMarketDataServiceRaw.getBitgetFuturesContracts(bitgetFuturesProductType);
-      bitgetFuturesContractDtosAll.addAll(bitgetFuturesContractDtos);
+      // Keep only perpetual contracts
+      bitgetFuturesContractDtosAll.addAll(
+        bitgetFuturesContractDtos.stream().filter(
+            bitgetFuturesContractDto -> bitgetFuturesContractDto.getSymbolType().equals(SymbolType.PERPETUAL)
+        ).collect(Collectors.toList())
+      );
     }
 
-    // Initialize all instruments metadata
+    // Initialize symbol mappings
+    bitgetFuturesContractDtosAll.forEach(
+        bitgetFuturesContractDto -> {
+          BitgetFuturesAdapters.putSymbolMapping(bitgetFuturesContractDto.getSymbol(),bitgetFuturesContractDto.getCurrencyPair());
+        }
+    );
+
+    // Initialize instrument metadata
     Map<Instrument, InstrumentMetaData> instruments =
         bitgetFuturesContractDtosAll.stream()
             .collect(
@@ -62,6 +76,8 @@ public class BitgetFuturesExchange extends BaseExchange {
                     BitgetFuturesContractDto::getFuturesContract, BitgetFuturesAdapters::toInstrumentMetaData
                 )
             );
+
+    exchangeMetaData = new ExchangeMetaData(instruments, null, null, null, null);
 
   }
 

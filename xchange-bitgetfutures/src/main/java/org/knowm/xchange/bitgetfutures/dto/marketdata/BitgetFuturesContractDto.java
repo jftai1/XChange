@@ -61,8 +61,11 @@ public class BitgetFuturesContractDto {
   @JsonProperty("sizeMultiplier")
   private BigDecimal sizeMultiplier;
 
+  /**
+   * Futures types: perpetual; delivery
+   */
   @JsonProperty("symbolType")
-  private String symbolType;
+  private SymbolType symbolType;
 
   @JsonProperty("minTradeUSDT")
   private BigDecimal minTradeUSDT;
@@ -134,7 +137,14 @@ public class BitgetFuturesContractDto {
    * @return
    */
   public FuturesContract getFuturesContract(){
-    return new BitgetFuturesContract(getCurrencyPair());
+    return new BitgetFuturesContract(getCurrencyPair(),symbolType.name());
+  }
+
+  public enum SymbolType {
+    @JsonProperty("perpetual")
+    PERPETUAL,
+    @JsonProperty("delivery")
+    DELIVERY
   }
 
 }

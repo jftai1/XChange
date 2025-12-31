@@ -25,23 +25,23 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
   public List<BitgetFuturesContractDto> getBitgetFuturesContracts(
       BitgetFuturesProductType futuresProductType) throws IOException {
     return bitget.futuresContracts(
-        null,
-        futuresProductType.getCode()).getData();
+        futuresProductType.getCode(), null
+    ).getData();
   }
-
 
   public List<BitgetFuturesContractDto> getBitgetFuturesContracts(
       BitgetFuturesProductType futuresProductType, Instrument instrument) throws IOException {
     return bitget.futuresContracts(
-        BitgetFuturesAdapters.toSymbolString(instrument),
-        futuresProductType.getCode()).getData();
+        futuresProductType.getCode(),
+        BitgetFuturesAdapters.toSymbolString(instrument)
+    ).getData();
   }
 
   public BitgetFuturesTickerDto getBitgetTickerDto(BitgetFuturesProductType futuresProductType, Instrument instrument)
       throws IOException {
     return bitget.ticker(
-        BitgetFuturesAdapters.toSymbolString(instrument),
-        futuresProductType.getCode()).getData();
+        futuresProductType.getCode(), BitgetFuturesAdapters.toSymbolString(instrument)
+    ).getData();
   }
 
   public List<BitgetFuturesTickerDto> getBitgetTickerDtos(BitgetFuturesProductType futuresProductType)
@@ -59,8 +59,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
   ) throws IOException {
     limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candles(
-        BitgetFuturesAdapters.toSymbolString(futuresContract),
-        productType.getCode(),
+        productType.getCode(), BitgetFuturesAdapters.toSymbolString(futuresContract),
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),
@@ -77,8 +76,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
   ) throws IOException {
     limit = (limit != null && limit == 0) ? null : limit;
     return bitget.candlesHistory(
-        BitgetFuturesAdapters.toSymbolString(futuresContract),
-        productType.getCode(),
+        productType.getCode(), BitgetFuturesAdapters.toSymbolString(futuresContract),
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),

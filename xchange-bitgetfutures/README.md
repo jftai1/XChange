@@ -19,25 +19,7 @@ If no keys are provided the integration tests that need them are skipped.
 > [!CAUTION]
 > Never commit your api credentials to the repository!
 
-Minimum viable implementation
 
-For market :
-marketDataService.getTicker
-marketDataService.getTickers
-marketDataService.getCandleStickData
-bitget.candles
-bitget.candlesHistory
-
-From account :
-xChangeAccountService.getAccountInfo
-
-For trade :
-tradeService.placeMarketOrder
-tradeService.placeLimitOrder
-tradeService.cancelOrder
-tradeService.getOrder
-tradeService.getOpenOrders
-tradeService.getTradeHistory
 
 
 

@@ -1,7 +1,6 @@
 package org.knowm.xchange.bitgetfutures;
 
 import lombok.experimental.UtilityClass;
-import org.knowm.xchange.bitget.dto.BitgetException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.FundsExceededException;

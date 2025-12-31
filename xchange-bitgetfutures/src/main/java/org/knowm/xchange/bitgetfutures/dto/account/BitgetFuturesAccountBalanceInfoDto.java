@@ -10,10 +10,13 @@ import lombok.extern.jackson.Jacksonized;
 import org.knowm.xchange.bitgetfutures.config.converter.StringToCurrencyConverter;
 import org.knowm.xchange.currency.Currency;
 
+/**
+ * Account Balance Information
+ */
 @Data
 @Builder
 @Jacksonized
-public class BitgetFuturesAccountBalanceDto {
+public class BitgetFuturesAccountBalanceInfoDto {
 
   /**
    * Margin coin

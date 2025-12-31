@@ -24,6 +24,9 @@ import org.knowm.xchange.instrument.Instrument;
 @UtilityClass
 public class BitgetFuturesAdapters {
 
+  /**
+   * Maintain a map of symbol to currency pair.
+   */
   private final Map<String, CurrencyPair> SYMBOL_TO_CURRENCY_PAIR = new HashMap<>();
 
   public void putSymbolMapping(String symbol, CurrencyPair currencyPair) {

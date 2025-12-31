@@ -3,8 +3,9 @@ package org.knowm.xchange.bitgetfutures.service.params;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import org.knowm.xchange.bitget.service.params.BitgetCandleStickHistoryParams;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleChartType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleStickPeriodType;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 import org.knowm.xchange.service.trade.params.CandleStickDataParams;
 import org.knowm.xchange.service.trade.params.DefaultCandleStickParam;
 import org.knowm.xchange.service.trade.params.DefaultCandleStickParamWithLimit;
@@ -27,6 +28,9 @@ public class BitgetFuturesCandleStickParamsFactory {
     Date endDate = null;
     long periodInSeconds = 0;
     int limit = 0;
+    BitgetFuturesProductType productType = null;
+    BitgetFuturesCandleStickPeriodType periodType = null;
+    BitgetFuturesCandleChartType chartType = null;
 
     if (params instanceof DefaultCandleStickParamWithLimit){
       limit = (((DefaultCandleStickParamWithLimit) params).getLimit() == 0) ? null : ((DefaultCandleStickParamWithLimit) params).getLimit();
@@ -38,9 +42,9 @@ public class BitgetFuturesCandleStickParamsFactory {
     }
 
     if (isHistoryParams(startDate, periodInSeconds)){
-      return new BitgetFuturesCandleStickHistoryParams(startDate,endDate,periodInSeconds,limit,null,null);
+      return new BitgetFuturesCandleStickHistoryParams(startDate,endDate,periodInSeconds,limit,productType,periodType);
     }else{
-      return new BitgetFuturesCandleStickRecentParams(startDate,endDate,periodInSeconds,limit,null,null);
+      return new BitgetFuturesCandleStickRecentParams(startDate,endDate,periodInSeconds,limit,productType,periodType,chartType);
     }
   }
 
