@@ -37,7 +37,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
     ).getData();
   }
 
-  public BitgetFuturesTickerDto getBitgetTickerDto(BitgetFuturesProductType futuresProductType, Instrument instrument)
+  public List<BitgetFuturesTickerDto> getBitgetTickerDto(BitgetFuturesProductType futuresProductType, Instrument instrument)
       throws IOException {
     return bitget.ticker(
         futuresProductType.getCode(), BitgetFuturesAdapters.toSymbolString(instrument)

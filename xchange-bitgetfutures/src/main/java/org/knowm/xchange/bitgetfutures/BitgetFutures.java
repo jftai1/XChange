@@ -55,7 +55,7 @@ public interface BitgetFutures {
    */
   @GET
   @Path("api/v2/mix/market/ticker")
-  BitgetFuturesResponse<BitgetFuturesTickerDto> ticker(
+  BitgetFuturesResponse<List<BitgetFuturesTickerDto>> ticker(
       @QueryParam("productType") String producType,
       @QueryParam("symbol") String symbol)
       throws IOException, BitgetFuturesException;

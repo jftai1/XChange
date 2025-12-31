@@ -14,6 +14,7 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.config.Config;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
+import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickRecentParams;
@@ -74,7 +75,9 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
       if (futuresProductType == null) {
         futuresProductType = exchange.getDefaultProductType();
       }
-      return BitgetFuturesAdapters.toTicker(getBitgetTickerDto(futuresProductType, instrument));
+
+      List<BitgetFuturesTickerDto> tickerDtos = getBitgetTickerDto(futuresProductType, instrument);
+      return BitgetFuturesAdapters.toTicker(tickerDtos.get(0));
     } catch (BitgetFuturesException e) {
       throw BitgetFuturesErrorAdapter.adapt(e);
     }

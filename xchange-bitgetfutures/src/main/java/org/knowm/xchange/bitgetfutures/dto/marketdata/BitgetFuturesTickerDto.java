@@ -24,11 +24,11 @@ public class BitgetFuturesTickerDto {
   @JsonProperty("bidPr")
   private BigDecimal bestBidPrice;
 
-  @JsonProperty("askSz")
-  private BigDecimal bestAskSize;
-
   @JsonProperty("bidSz")
   private BigDecimal bestBidSize;
+
+  @JsonProperty("askSz")
+  private BigDecimal bestAskSize;
 
   @JsonProperty("high24h")
   private BigDecimal high24h;
