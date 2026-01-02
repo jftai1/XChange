@@ -10,6 +10,7 @@ import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto.SymbolType;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesAccountService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataServiceRaw;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
@@ -22,14 +23,14 @@ public class BitgetFuturesExchange extends BaseExchange {
   /**
    * Exchange product types;
    */
-  private List<org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType>exchangeProductTypes = Arrays.asList(
+  private final List<org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType>exchangeProductTypes = Arrays.asList(
       BitgetFuturesProductType.COIN_FUTURES,
       BitgetFuturesProductType.USDC_FUTURES,
       BitgetFuturesProductType.USDT_FUTURES);
 
   @Override
   protected void initServices() {
-//    accountService = new BitgetAccountService(this);
+    accountService = new BitgetFuturesAccountService(this);
     marketDataService = new BitgetFuturesMarketDataService(this);
 //    tradeService = new BitgetTradeService(this);
   }
@@ -87,11 +88,20 @@ public class BitgetFuturesExchange extends BaseExchange {
   }
 
   /**
+   * Returns all supported product types.
+   * @return
+   */
+  public List<BitgetFuturesProductType> getExchangeProductTypes() {
+    return exchangeProductTypes;
+  }
+
+  /**
    * TODO May be part of Exchange Configuration parameters.
    * @return
    */
-  public org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType getDefaultProductType(){
+  public BitgetFuturesProductType getDefaultProductType(){
     return BitgetFuturesProductType.USDT_FUTURES;
   }
+
 
 }

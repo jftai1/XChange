@@ -19,13 +19,12 @@ public class BitgetFuturesCandleStickRecentParams extends BitgetFuturesCandleSti
 
   /**
    * Constructor has package visibility to prevent direct instantiation. Use factory method instead.
-   * @param startDate
-   * @param endDate
-   * @param periodInSeconds
-   * @param limit
-   * @param productType
-   * @param periodType
-   * @param chartType
+   * @param startDate The start time is to query the k-lines after this time According to the different time granularity, the corresponding time unit must be rounded down to be queried. (optional)
+   * @param endDate The end time is to query the k-lines before this time. According to the different time granularity, the corresponding time unit must be rounded down to be queried. (optional)
+   * @param periodInSeconds granularity K-line particle size, ex: 1H(1 hour) (required)
+   * @param limit Default: 100, maximum: 1000 (optional)
+   * @param productType Product type (required)
+   * @param chartType Candlestick chart types: MARKET tick; MARK mark; INDEX index; MARKET by default (optional)
    */
   BitgetFuturesCandleStickRecentParams(
       Date startDate,
@@ -33,9 +32,8 @@ public class BitgetFuturesCandleStickRecentParams extends BitgetFuturesCandleSti
       long periodInSeconds,
       int limit,
       BitgetFuturesProductType productType,
-      BitgetFuturesCandleStickPeriodType periodType,
       BitgetFuturesCandleChartType chartType) {
-    super(startDate, endDate, periodInSeconds, limit, productType, periodType);
+    super(startDate, endDate, periodInSeconds, limit, productType);
     this.chartType = chartType;
     Objects.requireNonNull(startDate);
     Objects.requireNonNull(endDate);

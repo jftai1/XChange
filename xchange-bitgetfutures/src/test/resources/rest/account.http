@@ -3,14 +3,14 @@
   import {gen_sign} from 'sign.js'
   gen_sign(request);
 %}
-GET {{api_host}}/api/v2/mix/account/accounts?productType=USDT-FUTURES
+GET {{api_host}}/api/v2/mix/account/accounts?productType=COIN-FUTURES
 ACCESS-KEY: {{api_key}}
 ACCESS-SIGN: {{sign}}
 ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
 
-### Get Single Account demo
+### Get Single Account demo (USDT - BTCUSDT - USDT)
 < {%
   import {gen_sign} from 'sign.js'
   gen_sign(request);
@@ -22,3 +22,14 @@ ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
 
+### Get Single Account demo (COIN - BTCUSD - BTC)
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+GET {{api_host}}/api/v2/mix/account/account?productType=COIN-FUTURES&symbol=BTCUSD&marginCoin=BTC
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+paptrading: 1

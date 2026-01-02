@@ -133,16 +133,4 @@ public class BitgetFuturesAccountBalanceInfoDto {
   @JsonProperty("isolatedUnrealizedPL")
   private BigDecimal isolatedUnrealizedPL;
 
-  @JsonProperty("assetMode")
-  private AssetMode assetMode;
-
-
-  public enum AssetMode {
-    @JsonProperty("union")
-    UNION,
-
-    @JsonProperty("single")
-    SINGLE
-  }
-
 }

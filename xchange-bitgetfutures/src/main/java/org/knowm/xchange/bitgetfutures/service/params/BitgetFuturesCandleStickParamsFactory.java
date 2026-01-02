@@ -6,9 +6,6 @@ import java.util.Date;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleChartType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleStickPeriodType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
-import org.knowm.xchange.service.trade.params.CandleStickDataParams;
-import org.knowm.xchange.service.trade.params.DefaultCandleStickParam;
-import org.knowm.xchange.service.trade.params.DefaultCandleStickParamWithLimit;
 
 /**
  * Factory class to create instances of BitgetCandleStickHistoryParams or BitgetCandleStickRecentParams.
@@ -18,71 +15,29 @@ public class BitgetFuturesCandleStickParamsFactory {
   /**
    * Creates Bitget candle recent or history params based on the start date value.
    * Before 60 days in the past will use create history params.
-   * @param params
    * @return
    */
-  public static BitgetFuturesCandleStickParams createBitgetCandleStickParams(CandleStickDataParams params) {
+  public static BitgetFuturesCandleStickParams createBitgetCandleStickParams(Date startDate,
+      Date endDate,
+      int limit,
+      BitgetFuturesProductType productType,
+      BitgetFuturesCandleStickPeriodType periodType,
+      BitgetFuturesCandleChartType chartType
+  ) {
 
-    // Exchange params
-    Date startDate = null;
-    Date endDate = null;
-    long periodInSeconds = 0;
-    int limit = 0;
-    BitgetFuturesProductType productType = null;
-    BitgetFuturesCandleStickPeriodType periodType = null;
-    BitgetFuturesCandleChartType chartType = null;
-
-    if (params instanceof DefaultCandleStickParamWithLimit){
-      limit = (((DefaultCandleStickParamWithLimit) params).getLimit() == 0) ? null : ((DefaultCandleStickParamWithLimit) params).getLimit();
-    }
-    if (params instanceof DefaultCandleStickParam) {
-      startDate = ((DefaultCandleStickParam)params).getStartDate();
-      endDate = ((DefaultCandleStickParam)params).getEndDate();
-      periodInSeconds = ((DefaultCandleStickParam)params).getPeriodInSecs();
+    // Default limit is 100
+    if (limit == 0) {
+      limit = 100;
     }
 
-    if (isHistoryParams(startDate, periodInSeconds)){
-      return new BitgetFuturesCandleStickHistoryParams(startDate,endDate,periodInSeconds,limit,productType,periodType);
+    long periodInSeconds = periodType.getPeriodInSeconds();
+
+    if (startDate != null && startDate.after(Date.from(Instant.now().minus(60, ChronoUnit.DAYS)))) {
+      return new BitgetFuturesCandleStickRecentParams(startDate, endDate, periodInSeconds, limit,
+          productType, chartType);
     }else{
-      return new BitgetFuturesCandleStickRecentParams(startDate,endDate,periodInSeconds,limit,productType,periodType,chartType);
+      return new BitgetFuturesCandleStickHistoryParams(startDate, endDate, periodInSeconds, limit,
+          productType);
     }
   }
-
-  /**
-   * Determines whether the params are for history or recent candles.
-   * @param startDate
-   * @param periodInSeconds
-   * @return true if history params, false if recent params.
-   */
-  public static boolean isHistoryParams(Date startDate, long periodInSeconds){
-    BitgetFuturesCandleStickPeriodType periodType = BitgetFuturesCandleStickPeriodType.getPeriodTypeFromSeconds(periodInSeconds);
-    Instant now = Instant.now();
-    long daysBetween = ChronoUnit.DAYS.between(startDate.toInstant(), now);
-
-    switch (periodType){
-      case CANDLE_STICK_1M:
-      case CANDLE_STICK_3M:
-      case CANDLE_STICK_5M:
-        return daysBetween > 30;
-      case CANDLE_STICK_15M:
-        return daysBetween > 52;
-      case CANDLE_STICK_30M:
-        return daysBetween > 62;
-      case CANDLE_STICK_1H:
-        return daysBetween > 83;
-      case CANDLE_STICK_2H:
-        return daysBetween > 120;
-      case CANDLE_STICK_4H:
-        return daysBetween > 240;
-      case CANDLE_STICK_6H:
-        return daysBetween > 360;
-      default:
-        return false;
-
-    }
-
-
-
-  }
-
 }

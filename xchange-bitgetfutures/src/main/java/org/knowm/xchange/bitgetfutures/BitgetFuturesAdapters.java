@@ -1,6 +1,7 @@
 package org.knowm.xchange.bitgetfutures;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +9,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.knowm.xchange.bitgetfutures.derivative.BitgetFuturesContract;
+import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
+import org.knowm.xchange.dto.account.Balance;
+import org.knowm.xchange.dto.account.Wallet;
+import org.knowm.xchange.dto.account.Wallet.WalletFeature;
 import org.knowm.xchange.dto.marketdata.CandleStick;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
@@ -97,5 +102,24 @@ public class BitgetFuturesAdapters {
             .collect(Collectors.toList()));
   }
 
+  public Wallet toWallet(String walletId, List<BitgetFuturesAccountBalanceInfoDto> bitgetFuturesBalanceDtos) {
+    List<Balance> balances = bitgetFuturesBalanceDtos.stream()
+        .map(BitgetFuturesAdapters::toBalance)
+        .collect(Collectors.toList());
+
+    return Wallet.Builder
+        .from(balances)
+        .id(walletId)
+        .features(EnumSet.of(WalletFeature.FUTURES_TRADING))
+        .build();
+  }
+
+  public Balance toBalance(BitgetFuturesAccountBalanceInfoDto balance) {
+    return new Balance.Builder()
+        .currency(balance.getMarginCurrency())
+        .available(balance.getAvailable())
+        .frozen(balance.getLocked())
+        .build();
+  }
 
 }

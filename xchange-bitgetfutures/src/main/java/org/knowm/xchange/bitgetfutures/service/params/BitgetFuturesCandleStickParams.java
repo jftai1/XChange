@@ -15,9 +15,9 @@ public abstract class BitgetFuturesCandleStickParams extends DefaultCandleStickP
   /**
    * Product type
    */
-  private final BitgetFuturesProductType productType = null;
+  private BitgetFuturesProductType productType = null;
   /**
-   * K-line particle size (Granularity
+   * K-line particle size (Granularity)
    */
   private BitgetFuturesCandleStickPeriodType periodType = null;
 
@@ -26,13 +26,11 @@ public abstract class BitgetFuturesCandleStickParams extends DefaultCandleStickP
       Date endDate,
       long periodInSeconds,
       int limit,
-      BitgetFuturesProductType productType,
-      BitgetFuturesCandleStickPeriodType periodType) {
+      BitgetFuturesProductType productType) {
     super(startDate, endDate, periodInSeconds, limit);
     // Product type is mandatory
     Objects.requireNonNull(productType);
-    // Period type is mandatory
-    Objects.requireNonNull(periodType);
+    this.productType = productType;
     // Period type is mandatory
     this.periodType = BitgetFuturesCandleStickPeriodType.getPeriodTypeFromSeconds(periodInSeconds);
     // Validate period type

@@ -15,16 +15,14 @@ public class BitgetFuturesCandleStickHistoryParams extends BitgetFuturesCandleSt
    * @param periodInSeconds
    * @param limit
    * @param productType
-   * @param periodType
    */
   BitgetFuturesCandleStickHistoryParams(
       Date startDate,
       Date endDate,
       long periodInSeconds,
       int limit,
-      BitgetFuturesProductType productType,
-      BitgetFuturesCandleStickPeriodType periodType) {
-    super(startDate, endDate, periodInSeconds, limit, productType, periodType);
+      BitgetFuturesProductType productType) {
+    super(startDate, endDate, periodInSeconds, limit, productType);
     Objects.requireNonNull(endDate);
     Validate.isTrue(limit <= 200);
   }
