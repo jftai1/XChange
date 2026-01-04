@@ -1,10 +1,13 @@
 package org.knowm.xchange.bitgetfutures;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
@@ -13,9 +16,15 @@ import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceIn
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderStatus;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
+import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.dto.Order.OrderStatus;
+import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.account.Balance;
 import org.knowm.xchange.dto.account.Wallet;
 import org.knowm.xchange.dto.account.Wallet.WalletFeature;
@@ -23,6 +32,9 @@ import org.knowm.xchange.dto.marketdata.CandleStick;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
+import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.instrument.Instrument;
 
 
@@ -120,6 +132,89 @@ public class BitgetFuturesAdapters {
         .available(balance.getAvailable())
         .frozen(balance.getLocked())
         .build();
+  }
+
+  public Order toOrder(BitgetFuturesOrderHistoryDto.OrderHistoryEntry orderHistoryEntry) {
+    if (orderHistoryEntry == null) {
+      return null;
+    }
+
+    Instrument instrument = toCurrencyPair(orderHistoryEntry.getSymbol());
+    Objects.requireNonNull(instrument);
+    OrderType orderType = orderHistoryEntry.getOrderSide();
+
+    Order.Builder builder;
+    switch (orderHistoryEntry.getOrderType()) {
+      case MARKET:
+        builder = new MarketOrder.Builder(orderType, instrument);
+        break;
+      case LIMIT:
+        builder = new LimitOrder.Builder(orderType, instrument).limitPrice(
+            orderHistoryEntry.getPrice());
+        break;
+      default:
+        throw new IllegalArgumentException("Can't map " + orderHistoryEntry.getOrderType());
+    }
+
+    if (orderType == OrderType.BID) {
+      // buy orders fill quote
+      builder.cumulativeAmount(orderHistoryEntry.getQuoteVolume());
+    } else if (orderType == OrderType.ASK) {
+      // sell orders fill asset
+      builder.cumulativeAmount(orderHistoryEntry.getBaseVolume());
+    } else {
+      throw new IllegalArgumentException("Can't map " + orderType);
+    }
+
+    BigDecimal fee = orderHistoryEntry.getFee();
+    if (fee != null) {
+      builder.fee(fee);
+    }
+
+    return builder
+        .id(String.valueOf(orderHistoryEntry.getOrderId()))
+        .averagePrice(orderHistoryEntry.getPriceAvg())
+        .originalAmount(orderHistoryEntry.getSize())
+        .userReference(orderHistoryEntry.getClientOid())
+        .timestamp(toDate(orderHistoryEntry.getCreatedAt()))
+        .orderStatus(toOrderStatus(orderHistoryEntry.getStatus()))
+        .build();
+  }
+
+  public OrderStatus toOrderStatus(BitgetFuturesOrderStatus bitgetOrderStatus) {
+    switch (bitgetOrderStatus) {
+      case PENDING:
+        return OrderStatus.NEW;
+      case PARTIALLY_FILLED:
+        return OrderStatus.PARTIALLY_FILLED;
+      case FILLED:
+        return OrderStatus.FILLED;
+      case CANCELLED:
+        return OrderStatus.CANCELED;
+      default:
+        throw new IllegalArgumentException("Can't map " + bitgetOrderStatus);
+    }
+  }
+
+  public UserTrade toUserTrade(BitgetFuturesFillDto.FillEntry fillEntry) {
+    BigDecimal feeAmount = (fillEntry.getFeeDetail() != null ? fillEntry.getFeeTotal() : null);
+    Currency feeCurrency = (fillEntry.getFeeDetail() != null ? fillEntry.getFeeCurrency() : null);
+    String orderUserReference = null;
+    return new UserTrade(
+        fillEntry.getOrderSide(),
+        fillEntry.getBaseVolume(),
+        toCurrencyPair(fillEntry.getSymbol()),
+        fillEntry.getPrice(),
+        toDate(fillEntry.getCreatedAt()),
+        fillEntry.getTradeId(),
+        fillEntry.getOrderId(),
+        feeAmount,
+        feeCurrency,
+        orderUserReference);
+  }
+
+  public Date toDate(Instant instant) {
+    return Optional.ofNullable(instant).map(Date::from).orElse(null);
   }
 
 }

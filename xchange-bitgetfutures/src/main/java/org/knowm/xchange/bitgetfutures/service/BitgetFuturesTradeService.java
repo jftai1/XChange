@@ -1,14 +1,25 @@
 package org.knowm.xchange.bitgetfutures.service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.Validate;
+import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
+import org.knowm.xchange.bitgetfutures.BitgetFuturesErrorAdapter;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
+import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
+import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
+import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades.TradeSortType;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.TradeHistoryParams;
+import org.knowm.xchange.service.trade.params.orders.OrderQueryParams;
 
 public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw implements TradeService {
 
@@ -17,15 +28,34 @@ public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw impl
   }
 
   @Override
-  public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
+  public Collection<Order> getOrder(OrderQueryParams... orderQueryParams) throws IOException {
+    Validate.validState(orderQueryParams.length == 1);
+    Validate.isInstanceOf(BitgetFuturesQueryOrderHistoryParams.class, orderQueryParams[0]);
+    BitgetFuturesQueryOrderHistoryParams params = (BitgetFuturesQueryOrderHistoryParams) orderQueryParams[0];
+
     try {
-      List<UserTrade> userTradeList =
-          bitgetFills(params).stream()
-              .map(BitgetAdapters::toUserTrade)
+      BitgetFuturesOrderHistoryDto orderHistory = orderHistory(params);
+      return orderHistory.getEntrustedList().stream()
+          .map(BitgetFuturesAdapters::toOrder)
               .collect(Collectors.toList());
-      return new UserTrades(userTradeList, TradeSortType.SortByID);
-    } catch (BitgetException e) {
-      throw BitgetErrorAdapter.adapt(e);
+    } catch (BitgetFuturesException e) {
+      throw BitgetFuturesErrorAdapter.adapt(e);
+    }
+  }
+
+  @Override
+  public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
+    Validate.isInstanceOf(BitgetFuturesTradeHistoryParams.class, params);
+    BitgetFuturesTradeHistoryParams queryParams = (BitgetFuturesTradeHistoryParams) params;
+
+    try {
+      BitgetFuturesFillDto fills = fills(queryParams);
+      final List<UserTrade> userTradeList = fills.getFillList().stream()
+          .map(BitgetFuturesAdapters::toUserTrade)
+          .collect(Collectors.toList());
+      return new UserTrades(userTradeList, TradeSortType.SortByTimestamp);
+    } catch (BitgetFuturesException e) {
+      throw BitgetFuturesErrorAdapter.adapt(e);
     }
   }
 }

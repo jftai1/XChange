@@ -13,7 +13,7 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesProperties;
 /**
  * Extends this class to run authenticated integration tests.
  */
-class BitgetAuthenticatedServiceIntegrationBase {
+class BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   static BitgetFuturesExchange exchange;
 

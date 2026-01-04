@@ -5,10 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Information received after placing, updating, or cancelling an order.
+ */
 @Data
 @Builder
 @Jacksonized
-public class BitgetFuturesOrderInfoDto {
+public class BitgetFuturesOrderUpdateInfoDto {
 
   @JsonProperty("orderId")
   private String orderId;

@@ -1,6 +1,5 @@
 package org.knowm.xchange.bitgetfutures.dto.trade;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigDecimal;
@@ -35,7 +34,6 @@ public class BitgetFuturesFillDto {
   @Data
   @Builder
   @Jacksonized
-  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
   public static class FillEntry {
 
     /**
@@ -72,7 +70,7 @@ public class BitgetFuturesFillDto {
      * Transaction fee
      */
     @JsonProperty("feeDetail")
-    private FeeDetail feeDetail;
+    private List<FeeDetail> feeDetail;
 
     /**
      * Type of transaction buy: Buy sell: Sell
@@ -142,6 +140,21 @@ public class BitgetFuturesFillDto {
      */
     @JsonProperty("cTime")
     private Instant createdAt;
+
+    public BigDecimal getFeeTotal() {
+      if (this.feeDetail == null || this.feeDetail.isEmpty()) {
+        return BigDecimal.ZERO;
+      }
+      return this.feeDetail.stream().map(FeeDetail::getTotalFee)
+          .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Currency getFeeCurrency() {
+      if (this.feeDetail == null || this.feeDetail.isEmpty()) {
+        return null;
+      }
+      return this.feeDetail.get(0).getCurrency();
+    }
 
   }
 

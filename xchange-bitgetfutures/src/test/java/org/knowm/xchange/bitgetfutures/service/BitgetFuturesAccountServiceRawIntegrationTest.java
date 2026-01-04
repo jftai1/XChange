@@ -8,9 +8,9 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDetailDto;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
-import org.knowm.xchange.dto.account.AccountInfo;
 
-class BitgetAccountServiceRawIntegrationTest extends BitgetAuthenticatedServiceIntegrationBase {
+class BitgetFuturesAccountServiceRawIntegrationTest extends
+    BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   BitgetFuturesAccountServiceRaw bitgetFuturesAccountServiceRaw = (BitgetFuturesAccountServiceRaw)exchange.getAccountService();
 

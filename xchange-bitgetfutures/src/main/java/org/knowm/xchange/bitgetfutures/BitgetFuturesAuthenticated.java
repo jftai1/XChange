@@ -17,7 +17,8 @@ import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceIn
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesCancelOrderParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
@@ -127,7 +128,7 @@ public interface BitgetFuturesAuthenticated {
    */
   @GET
   @Path("api/v2/mix/order/fills")
-  BitgetFuturesResponse<List<BitgetFuturesFillDto>> fills(
+  BitgetFuturesResponse<BitgetFuturesFillDto> fills(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
@@ -145,7 +146,7 @@ public interface BitgetFuturesAuthenticated {
   @POST
   @Path("api/v2/mix/order/place-order")
   @Consumes(MediaType.APPLICATION_JSON)
-  BitgetFuturesResponse<BitgetFuturesOrderInfoDto> createOrder(
+  BitgetFuturesResponse<BitgetFuturesOrderUpdateInfoDto> createOrder(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
@@ -167,7 +168,7 @@ public interface BitgetFuturesAuthenticated {
 
   @GET
   @Path("api/v2/mix/order/orders-pending")
-  BitgetFuturesResponse<List<BitgetFuturesOrderInfoDto>> pendingOrders(
+  BitgetFuturesResponse<List<BitgetFuturesOrderUpdateInfoDto>> pendingOrders(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
@@ -207,7 +208,7 @@ public interface BitgetFuturesAuthenticated {
    */
   @GET
   @Path("api/v2/mix/order/orders-history")
-  BitgetFuturesResponse<List<BitgetFuturesOrderInfoDto>> orderHistory(
+  BitgetFuturesResponse<BitgetFuturesOrderHistoryDto> orderHistory(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,

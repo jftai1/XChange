@@ -11,16 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.knowm.xchange.bitgetfutures.BitgetIntegrationTestParent;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParamsFactory;
-import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickRecentParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesMarketDataTickerParams;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.instrument.Instrument;
-import org.knowm.xchange.service.trade.params.CandleStickDataParams;
-import org.knowm.xchange.service.trade.params.DefaultCandleStickParamWithLimit;
 
-class BitgetMarketDataServiceIntegrationTest extends BitgetIntegrationTestParent {
+class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTestParent {
 
   @Test
   void valid_single_ticker() throws IOException {

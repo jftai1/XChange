@@ -6,7 +6,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.dto.account.AccountInfo;
 
-class BitgetAccountServiceIntegrationTest extends BitgetAuthenticatedServiceIntegrationBase {
+class BitgetFuturesAccountServiceIntegrationTest extends
+    BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   @Test
   void valid_balances() throws IOException {

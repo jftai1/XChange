@@ -1,18 +1,12 @@
 package org.knowm.xchange.bitgetfutures.service;
 
 import java.io.IOException;
-import java.util.List;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
-import org.knowm.xchange.instrument.Instrument;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamInstrument;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamLimit;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamOrderId;
-import org.knowm.xchange.service.trade.params.TradeHistoryParams;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsIdSpan;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
 
 public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
 
@@ -20,38 +14,15 @@ public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
     super(exchange);
   }
 
-  public List<BitgetFuturesOrderInfoDto> orderHistory(TradeHistoryParams params) throws IOException {
-    // get arguments
-    Instrument instrument =
-        params instanceof TradeHistoryParamInstrument
-            ? ((TradeHistoryParamInstrument) params).getInstrument()
-            : null;
-    Integer limit =
-        params instanceof TradeHistoryParamLimit
-            ? ((TradeHistoryParamLimit) params).getLimit()
-            : null;
-    String orderId =
-        params instanceof TradeHistoryParamOrderId
-            ? ((TradeHistoryParamOrderId) params).getOrderId()
-            : null;
-    String lastTradeId =
-        params instanceof TradeHistoryParamsIdSpan
-            ? ((TradeHistoryParamsIdSpan) params).getEndId()
-            : null;
-    Long from = null;
-    Long to = null;
-    if (params instanceof TradeHistoryParamsTimeSpan) {
-      TradeHistoryParamsTimeSpan paramsTimeSpan = ((TradeHistoryParamsTimeSpan) params);
-      from = paramsTimeSpan.getStartTime() != null ? paramsTimeSpan.getStartTime().getTime() : null;
-      to = paramsTimeSpan.getEndTime() != null ? paramsTimeSpan.getEndTime().getTime() : null;
+  public BitgetFuturesOrderHistoryDto orderHistory(BitgetFuturesQueryOrderHistoryParams params)
+      throws IOException {
+    if (params == null) {
+      return null;
     }
-
-    String productType = null;
-    if (params instanceof BitgetFuturesTradeHistoryParams){
-      BitgetFuturesTradeHistoryParams paramsBitgetFutures = (BitgetFuturesTradeHistoryParams)params;
-      productType = paramsBitgetFutures.getProductType().getCode();
-    }
-    String clientOid = null;
+    Long from = (params.getStartTime() != null ? params.getStartTime().getTime() : null);
+    Long to = (params.getEndTime() != null ? params.getEndTime().getTime() : null);
+    String productType = (params.getProductType() != null ? params.getProductType().getCode()
+        : null);
     String orderSource = null;
 
     return bitgetAuthenticated
@@ -61,15 +32,41 @@ public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
             passphrase,
             exchange.getNonceFactory(),
             buildDemoHeaderParamValue(),
-            orderId,
-            clientOid,
-            BitgetFuturesAdapters.toSymbolString(instrument),
+            params.getOrderId(),
+            params.getClientOid(),
+            BitgetFuturesAdapters.toSymbolString(params.getInstrument()),
             productType,
-            lastTradeId,
+            params.getEndId(),
             orderSource,
             from,
             to,
-            limit)
+            params.getLimit())
+        .getData();
+  }
+
+  public BitgetFuturesFillDto fills(BitgetFuturesTradeHistoryParams params) throws IOException {
+    if (params == null) {
+      return null;
+    }
+    Long from = (params.getStartTime() != null ? params.getStartTime().getTime() : null);
+    Long to = (params.getEndTime() != null ? params.getEndTime().getTime() : null);
+    String productType = (params.getProductType() != null ? params.getProductType().getCode()
+        : null);
+
+    return bitgetAuthenticated
+        .fills(
+            apiKey,
+            bitgetDigest,
+            passphrase,
+            exchange.getNonceFactory(),
+            buildDemoHeaderParamValue(),
+            params.getOrderId(),
+            BitgetFuturesAdapters.toSymbolString(params.getInstrument()),
+            productType,
+            params.getEndId(),
+            from,
+            to,
+            params.getLimit())
         .getData();
   }
 

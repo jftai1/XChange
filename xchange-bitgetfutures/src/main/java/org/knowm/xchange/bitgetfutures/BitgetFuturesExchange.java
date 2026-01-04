@@ -14,6 +14,7 @@ import org.knowm.xchange.bitgetfutures.service.BitgetFuturesAccountService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataServiceRaw;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesTradeService;
 import org.knowm.xchange.dto.meta.ExchangeMetaData;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
@@ -32,7 +33,7 @@ public class BitgetFuturesExchange extends BaseExchange {
   protected void initServices() {
     accountService = new BitgetFuturesAccountService(this);
     marketDataService = new BitgetFuturesMarketDataService(this);
-//    tradeService = new BitgetTradeService(this);
+    tradeService = new BitgetFuturesTradeService(this);
   }
 
   @Override

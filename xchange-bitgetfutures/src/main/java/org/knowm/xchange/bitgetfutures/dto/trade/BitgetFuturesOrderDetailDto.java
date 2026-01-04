@@ -83,7 +83,7 @@ public class BitgetFuturesOrderDetailDto {
    * Order expiration date
    */
   @JsonProperty("force")
-  private TimeInForce timeInForce;
+  private BitgetFuturesOrderTimeInForce timeInForce;
 
   /**
    * Total PnL
@@ -95,7 +95,7 @@ public class BitgetFuturesOrderDetailDto {
    * Position direction
    */
   @JsonProperty("posSide")
-  private PositionSide positionSide;
+  private BitgetFuturesOrderPositionSide positionSide;
 
   /**
    * Margin coin
@@ -114,7 +114,7 @@ public class BitgetFuturesOrderDetailDto {
    * Preset Take Profit Trigger type
    */
   @JsonProperty("presetStopSurplusType")
-  private PresetPriceTriggerType presetStopSurplusTriggerType;
+  private BitgetFuturesOrderPresetTriggerPriceType presetStopSurplusTriggerType;
 
   /**
    * Preset Take Profit Execution price
@@ -132,7 +132,7 @@ public class BitgetFuturesOrderDetailDto {
    * Preset Stop Loss Trigger type
    */
   @JsonProperty("presetStopLossType")
-  private PresetPriceTriggerType presetStopLossTriggerType;
+  private BitgetFuturesOrderPresetTriggerPriceType presetStopLossTriggerType;
 
   /**
    * Preset Stop Loss Execution price
@@ -150,7 +150,7 @@ public class BitgetFuturesOrderDetailDto {
    * Order type
    */
   @JsonProperty("orderType")
-  private OrderType orderType;
+  private BitgetFuturesOrderType orderType;
 
   /**
    * Leverage
@@ -162,7 +162,7 @@ public class BitgetFuturesOrderDetailDto {
    * Margin mode
    */
   @JsonProperty("marginMode")
-  private MarginMode marginMode;
+  private BitgetFuturesOrderMarginMode marginMode;
 
   /**
    * Whether or not to just reduce the position.
@@ -212,7 +212,7 @@ public class BitgetFuturesOrderDetailDto {
    * Position mode
    */
   @JsonProperty("posMode")
-  private PositionMode positionMode;
+  private BitgetFuturesOrderPositionMode positionMode;
 
   /**
    * Order source normal: Normal order market: market order profit_market: Market TP order
@@ -233,7 +233,6 @@ public class BitgetFuturesOrderDetailDto {
    * strategy_oco_limit: Strategy-OCO Limit Order strategy_oco_trigger: Strategy-OCO Trigger Order
    * modify_order_limit: Limit Modify Order strategy_regular_buy: Strategy-Regular Buy
    * strategy_grid_middle: Strategy-Neutral Grid
-   * TODO OrderSource does not have all values.
    */
   @JsonProperty("orderSource")
   private String orderSource;
@@ -242,7 +241,7 @@ public class BitgetFuturesOrderDetailDto {
    * Cancel reason
    */
   @JsonProperty("cancelReason")
-  private CancelReason cancelReason;
+  private BitgetFuturesOrderCancelReason cancelReason;
   /**
    * Creation time, ms
    */
@@ -253,100 +252,5 @@ public class BitgetFuturesOrderDetailDto {
    */
   @JsonProperty("uTime")
   private Instant updatedAt;
-
-
-  public enum OrderType {
-    @JsonProperty("limit")
-    LIMIT,
-
-    @JsonProperty("market")
-    MARKET
-  }
-
-  public enum BitgetFuturesOrderStatus {
-    @JsonProperty("live")
-    PENDING,
-
-    @JsonProperty("partially_filled")
-    PARTIALLY_FILLED,
-
-    @JsonProperty("filled")
-    FILLED,
-
-    @JsonProperty("cancelled")
-    CANCELLED
-  }
-
-  public enum TimeInForce {
-    @JsonProperty("fok")
-    FILL_OR_KILL,
-    @JsonProperty("gtc")
-    GOOD_TIL_CANCELLED,
-    @JsonProperty("ioc")
-    IMMEDIATE_OR_CANCEL,
-    @JsonProperty("post_only")
-    POST_ONLY
-  }
-
-  public enum PositionSide {
-    @JsonProperty("long")
-    LONG,
-    @JsonProperty("short")
-    SHORT,
-    @JsonProperty("net")
-    NET
-  }
-
-  public enum PositionMode {
-    @JsonProperty("one_way_mode")
-    ONE_WAY_POSITION,
-    @JsonProperty("hedge_mode")
-    TWO_WAY_POSITION
-  }
-
-  /**
-   * Preset Take Profit Trigger type fill_price: market price; mark_price: mark price
-   */
-  public enum PresetPriceTriggerType {
-    @JsonProperty("fill_price")
-    MARKET_PRICE,
-    @JsonProperty("mark_price")
-    MARK_PRICE
-  }
-
-  public enum MarginMode {
-    @JsonProperty("crossed")
-    CROSSED,
-    @JsonProperty("isolated")
-    ISOLATED
-  }
-
-  public enum OrderSource {
-    @JsonProperty("normal")
-    NORMAL,
-
-    @JsonProperty("market")
-    MARKET,
-
-    @JsonProperty("spot_trader_buy")
-    SPOT_TRADER_BUY,
-
-    @JsonProperty("spot_follower_buy")
-    SPOT_FOLLOWER_BUY,
-
-    @JsonProperty("spot_trader_sell")
-    SPOT_TRADER_SELL,
-
-    @JsonProperty("spot_follower_sell")
-    SPOT_FOLLOWER_SELL
-  }
-
-  public enum CancelReason {
-    @JsonProperty("normal_cancel")
-    NORMAL,
-    @JsonProperty("stp_cancel")
-    STP
-  }
-
 
 }

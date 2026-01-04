@@ -10,7 +10,7 @@ import org.knowm.xchange.bitgetfutures.derivative.BitgetFuturesContract;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.currency.CurrencyPair;
 
-class BitgetMarketDataServiceRawIntegrationTest extends BitgetIntegrationTestParent {
+class BitgetFuturesMarketDataServiceRawIntegrationTest extends BitgetIntegrationTestParent {
 
   BitgetFuturesMarketDataServiceRaw bitgetMarketDataServiceRaw =
       (BitgetFuturesMarketDataServiceRaw) exchange.getMarketDataService();
