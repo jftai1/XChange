@@ -10,11 +10,15 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesErrorAdapter;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.marketdata.Trades.TradeSortType;
+import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.TradeService;
@@ -58,4 +62,27 @@ public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw impl
       throw BitgetFuturesErrorAdapter.adapt(e);
     }
   }
+
+  @Override
+  public String placeMarketOrder(MarketOrder marketOrder) throws IOException {
+    try {
+      Validate.isInstanceOf(BitgetFuturesMarketOrder.class, marketOrder);
+      BitgetFuturesMarketOrder bitgetMarketOrder = (BitgetFuturesMarketOrder) marketOrder;
+      return createOrder(BitgetFuturesAdapters.toBitgetPlaceOrderDto(bitgetMarketOrder)).getOrderId();
+    } catch (BitgetFuturesException e) {
+      throw BitgetFuturesErrorAdapter.adapt(e);
+    }
+  }
+
+  @Override
+  public String placeLimitOrder(LimitOrder limitOrder) throws IOException {
+    try {
+      Validate.isInstanceOf(BitgetFuturesLimitOrder.class, limitOrder);
+      BitgetFuturesLimitOrder bitgetLimitOrder = (BitgetFuturesLimitOrder) limitOrder;
+      return createOrder(BitgetFuturesAdapters.toBitgetPlaceOrderDto(bitgetLimitOrder)).getOrderId();
+    } catch (BitgetFuturesException e) {
+      throw BitgetFuturesErrorAdapter.adapt(e);
+    }
+  }
+
 }

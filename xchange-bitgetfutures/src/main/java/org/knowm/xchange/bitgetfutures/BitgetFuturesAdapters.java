@@ -17,8 +17,13 @@ import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderStatus;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderTimeInForce;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderType;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
@@ -215,6 +220,31 @@ public class BitgetFuturesAdapters {
 
   public Date toDate(Instant instant) {
     return Optional.ofNullable(instant).map(Date::from).orElse(null);
+  }
+
+  public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(BitgetFuturesMarketOrder bitgetMarketOrder) {
+    return BitgetFuturesPlaceOrderDto.builder()
+        .productType(bitgetMarketOrder.getProductType().getCode())
+        .symbol(toSymbolString(bitgetMarketOrder.getInstrument()))
+        .orderSide(bitgetMarketOrder.getType())
+        .orderType(BitgetFuturesOrderType.MARKET)
+        .clientOid(bitgetMarketOrder.getUserReference())
+        .size(bitgetMarketOrder.getOriginalAmount())
+        .build();
+  }
+
+  public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(BitgetFuturesLimitOrder bitgetLimitOrder) {
+    return BitgetFuturesPlaceOrderDto.builder()
+        .productType(bitgetLimitOrder.getProductType().getCode())
+        .symbol(toSymbolString(bitgetLimitOrder.getInstrument()))
+        .orderSide(bitgetLimitOrder.getType())
+        .orderType(BitgetFuturesOrderType.LIMIT)
+        .timeInForce(BitgetFuturesOrderTimeInForce.GOOD_TIL_CANCELLED)
+        .price(bitgetLimitOrder.get.getLimitPrice())
+        .size(limitOrder.getOriginalAmount())
+        .clientOid(limitOrder.getUserReference())
+        .requestTime(limitOrder.getTimestamp().toInstant())
+        .build();
   }
 
 }

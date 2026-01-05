@@ -32,7 +32,7 @@ public class BitgetFuturesPlaceOrderDto {
   private String productType;
 
   @JsonProperty("marginMode")
-  private MarginMode marginMode;
+  private BitgetFuturesOrderMarginMode marginMode;
 
   /**
    * Margin coin
@@ -74,14 +74,14 @@ public class BitgetFuturesPlaceOrderDto {
    * Order type limit: limit orders market: market orders
    */
   @JsonProperty("orderType")
-  private OrderType orderType;
+  private BitgetFuturesOrderType orderType;
 
   /**
    * Order expiration date. Required if the orderType is limit ioc: Immediate or cancel fok: Fill or
    * kill gtc: Good till canceled(default value) post_only: Post only
    */
   @JsonProperty("force")
-  private TimeInForce timeInForce;
+  private BitgetFuturesOrderTimeInForce timeInForce;
 
   /**
    * Customize order ID
@@ -120,51 +120,11 @@ public class BitgetFuturesPlaceOrderDto {
   @JsonProperty("presetStopLossExecutePrice")
   private BigDecimal presetStopLossExecutePrice;
 
-  public enum OrderType {
-    @JsonProperty("limit")
-    LIMIT,
-
-    @JsonProperty("market")
-    MARKET
-  }
-
   /**
    * STP Mode(Self Trade Prevention) none: not setting STP(default value) cancel_taker: cancel taker
    * order cancel_maker: cancel maker order cancel_both: cancel both of taker and maker orders
    */
   @JsonProperty("stpMode")
-  private StpMode stpMode;
+  private BitgetFuturesOrderStpMode stpMode;
 
-  public enum MarginMode {
-    @JsonProperty("crossed")
-    CROSSED,
-
-    @JsonProperty("isolated")
-    ISOLATED
-  }
-
-  public enum TimeInForce {
-    @JsonProperty("fok")
-    FILL_OR_KILL,
-    @JsonProperty("gtc")
-    GOOD_TIL_CANCELLED,
-    @JsonProperty("ioc")
-    IMMEDIATE_OR_CANCEL,
-    @JsonProperty("post_only")
-    POST_ONLY
-  }
-
-  public enum StpMode {
-    @JsonProperty("none")
-    NONE,
-
-    @JsonProperty("cancel_taker")
-    CANCEL_TAKER,
-
-    @JsonProperty("cancel_maker")
-    CANCEL_MAKER,
-
-    @JsonProperty("cancel_both")
-    CANCEL_BOTH
-  }
 }

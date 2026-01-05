@@ -5,6 +5,8 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 
@@ -67,6 +69,19 @@ public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
             from,
             to,
             params.getLimit())
+        .getData();
+  }
+
+  public BitgetFuturesOrderUpdateInfoDto createOrder(BitgetFuturesPlaceOrderDto bitgetPlaceOrderDto)
+      throws IOException {
+    return bitgetAuthenticated
+        .createOrder(
+            apiKey,
+            bitgetDigest,
+            passphrase,
+            exchange.getNonceFactory(),
+            buildDemoHeaderParamValue(),
+            bitgetPlaceOrderDto)
         .getData();
   }
 
