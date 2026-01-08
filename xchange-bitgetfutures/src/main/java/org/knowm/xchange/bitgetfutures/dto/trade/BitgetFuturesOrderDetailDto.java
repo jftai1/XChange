@@ -49,12 +49,6 @@ public class BitgetFuturesOrderDetailDto {
   private BigDecimal baseVolume;
 
   /**
-   * Average price
-   */
-  @JsonProperty("priceAvg")
-  private BigDecimal priceAvg;
-
-  /**
    * Transaction fee
    */
   @JsonProperty("fee")
@@ -67,10 +61,15 @@ public class BitgetFuturesOrderDetailDto {
   private BigDecimal price;
 
   /**
+   * Average price
+   */
+  @JsonProperty("priceAvg")
+  private BigDecimal priceAvg;
+  /**
    * Order status
    */
   @JsonProperty("status")
-  private BitgetFuturesOrderStatus orderStatus;
+  private BitgetFuturesOrderStatus status;
 
   /**
    * Direction (buy or sell)
@@ -89,7 +88,7 @@ public class BitgetFuturesOrderDetailDto {
    * Total PnL
    */
   @JsonProperty("totalProfits")
-  private BigDecimal totalProfits;
+  private BigDecimal profit;
 
   /**
    * Position direction
@@ -105,52 +104,10 @@ public class BitgetFuturesOrderDetailDto {
   private Currency marginCurrency;
 
   /**
-   * Set TP
-   */
-  @JsonProperty("presetStopSurplusPrice")
-  private BigDecimal presetStopSurplusPrice;
-
-  /**
-   * Preset Take Profit Trigger type
-   */
-  @JsonProperty("presetStopSurplusType")
-  private BitgetFuturesOrderPresetTriggerPriceType presetStopSurplusTriggerType;
-
-  /**
-   * Preset Take Profit Execution price
-   */
-  @JsonProperty("presetStopSurplusExecutePrice")
-  private BigDecimal presetStopSurplusExecutePrice;
-
-  /**
-   * Set SL
-   */
-  @JsonProperty("presetStopLossPrice")
-  private BigDecimal presetStopLossPrice;
-
-  /**
-   * Preset Stop Loss Trigger type
-   */
-  @JsonProperty("presetStopLossType")
-  private BitgetFuturesOrderPresetTriggerPriceType presetStopLossTriggerType;
-
-  /**
-   * Preset Stop Loss Execution price
-   */
-  @JsonProperty("presetStopLossExecutePrice")
-  private BigDecimal presetStopLossExecutePrice;
-
-  /**
    * Trading amount in quoting coin
    */
   @JsonProperty("quoteVolume")
   private BigDecimal quoteVolume;
-
-  /**
-   * Order type
-   */
-  @JsonProperty("orderType")
-  private BitgetFuturesOrderType orderType;
 
   /**
    * Leverage
@@ -215,6 +172,12 @@ public class BitgetFuturesOrderDetailDto {
   private BitgetFuturesOrderPositionMode positionMode;
 
   /**
+   * Order type
+   */
+  @JsonProperty("orderType")
+  private BitgetFuturesOrderType orderType;
+
+  /**
    * Order source normal: Normal order market: market order profit_market: Market TP order
    * loss_market: Market SL order Trader_delegate: Elite trade order trader_profit: Trader takes
    * profit trader_loss: Trader stops loss reverse: Reversed orders trader_reverse: Reversed elite
@@ -253,4 +216,39 @@ public class BitgetFuturesOrderDetailDto {
   @JsonProperty("uTime")
   private Instant updatedAt;
 
+  /**
+   * Set TP
+   */
+  @JsonProperty("presetStopSurplusPrice")
+  private BigDecimal presetStopSurplusPrice;
+
+  /**
+   * Set SL
+   */
+  @JsonProperty("presetStopLossPrice")
+  private BigDecimal presetStopLossPrice;
+
+  /**
+   * Preset Take Profit Trigger type
+   */
+  @JsonProperty("presetStopSurplusType")
+  private BitgetFuturesOrderPresetTriggerPriceType presetStopSurplusTriggerType;
+
+  /**
+   * Preset Take Profit Execution price
+   */
+  @JsonProperty("presetStopSurplusExecutePrice")
+  private BigDecimal presetStopSurplusExecutePrice;
+
+  /**
+   * Preset Stop Loss Trigger type
+   */
+  @JsonProperty("presetStopLossType")
+  private BitgetFuturesOrderPresetTriggerPriceType presetStopLossTriggerType;
+
+  /**
+   * Preset Stop Loss Execution price
+   */
+  @JsonProperty("presetStopLossExecutePrice")
+  private BigDecimal presetStopLossExecutePrice;
 }

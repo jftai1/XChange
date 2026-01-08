@@ -224,26 +224,31 @@ public class BitgetFuturesAdapters {
 
   public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(BitgetFuturesMarketOrder bitgetMarketOrder) {
     return BitgetFuturesPlaceOrderDto.builder()
-        .productType(bitgetMarketOrder.getProductType().getCode())
         .symbol(toSymbolString(bitgetMarketOrder.getInstrument()))
+        .productType(bitgetMarketOrder.getProductType().getCode())
+        .marginMode(bitgetMarketOrder.getMarginMode())
+        .marginCurrency(bitgetMarketOrder.getInstrument().getCounter())
+        .size(bitgetMarketOrder.getOriginalAmount())
         .orderSide(bitgetMarketOrder.getType())
         .orderType(BitgetFuturesOrderType.MARKET)
         .clientOid(bitgetMarketOrder.getUserReference())
-        .size(bitgetMarketOrder.getOriginalAmount())
         .build();
   }
 
   public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(BitgetFuturesLimitOrder bitgetLimitOrder) {
     return BitgetFuturesPlaceOrderDto.builder()
-        .productType(bitgetLimitOrder.getProductType().getCode())
         .symbol(toSymbolString(bitgetLimitOrder.getInstrument()))
+        .productType(bitgetLimitOrder.getProductType().getCode())
+        .marginMode(bitgetLimitOrder.getMarginMode())
+        .marginCurrency(bitgetLimitOrder.getInstrument().getCounter())
+        .size(bitgetLimitOrder.getOriginalAmount())
+        .price(bitgetLimitOrder.getLimitPrice())
         .orderSide(bitgetLimitOrder.getType())
         .orderType(BitgetFuturesOrderType.LIMIT)
         .timeInForce(BitgetFuturesOrderTimeInForce.GOOD_TIL_CANCELLED)
-        .price(bitgetLimitOrder.get.getLimitPrice())
-        .size(limitOrder.getOriginalAmount())
-        .clientOid(limitOrder.getUserReference())
-        .requestTime(limitOrder.getTimestamp().toInstant())
+        .clientOid(bitgetLimitOrder.getUserReference())
+        .presetStopSurplusPrice(bitgetLimitOrder.getPresetStopSurplusPrice())
+        .presetStopLossPrice(bitgetLimitOrder.getPresetStopLossPrice())
         .build();
   }
 
