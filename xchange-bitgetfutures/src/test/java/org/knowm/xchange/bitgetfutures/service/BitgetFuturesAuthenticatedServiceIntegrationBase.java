@@ -9,6 +9,8 @@ import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extends this class to run authenticated integration tests.
@@ -16,6 +18,8 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesProperties;
 class BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   static BitgetFuturesExchange exchange;
+
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
 
   @BeforeAll
   public static void credentialsPresent() throws IOException {

@@ -12,7 +12,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderTimeInForce implements IOrderFlags {
+public enum BitgetFuturesOrderTimeInForce {
 
   FILL_OR_KILL("fok"),
   GOOD_TIL_CANCELLED("gtc"),

@@ -55,7 +55,7 @@ public class BitgetFuturesAdapters {
     SYMBOL_TO_CURRENCY_PAIR.put(symbol, currencyPair);
   }
 
-  public CurrencyPair toCurrencyPair(String symbol) {
+  public CurrencyPair toInstrument(String symbol) {
     return SYMBOL_TO_CURRENCY_PAIR.get(symbol);
   }
 
@@ -93,14 +93,16 @@ public class BitgetFuturesAdapters {
       return new BitgetFuturesContract(currencyPair);
   }
 
-  public String toProductTypeString(FuturesContract future) {
-    return future.getBase().getCurrencyCode() + "-FUTURES".toUpperCase();
-  }
-
   public String toSymbolString(Instrument instrument) {
     return instrument == null
         ? null
         : (instrument.getBase().toString() + instrument.getCounter().toString()).toUpperCase();
+  }
+
+  public String toMarginCoin(Instrument instrument) {
+    return instrument == null
+        ? null
+        : instrument.getCounter().toString().toUpperCase();
   }
 
   public CandleStickData toCandleStickData(CurrencyPair currencyPair, List<BitgetFuturesCandleDto> bitgetCandleDtos) {
@@ -144,7 +146,7 @@ public class BitgetFuturesAdapters {
       return null;
     }
 
-    Instrument instrument = toCurrencyPair(orderHistoryEntry.getSymbol());
+    Instrument instrument = toInstrument(orderHistoryEntry.getSymbol());
     Objects.requireNonNull(instrument);
     OrderType orderType = orderHistoryEntry.getOrderSide();
 
@@ -208,7 +210,7 @@ public class BitgetFuturesAdapters {
     return new UserTrade(
         fillEntry.getOrderSide(),
         fillEntry.getBaseVolume(),
-        toCurrencyPair(fillEntry.getSymbol()),
+        toInstrument(fillEntry.getSymbol()),
         fillEntry.getPrice(),
         toDate(fillEntry.getCreatedAt()),
         fillEntry.getTradeId(),
@@ -227,11 +229,13 @@ public class BitgetFuturesAdapters {
         .symbol(toSymbolString(bitgetMarketOrder.getInstrument()))
         .productType(bitgetMarketOrder.getProductType().getCode())
         .marginMode(bitgetMarketOrder.getMarginMode())
+        .tradeSide(bitgetMarketOrder.getTradeSidePositionMode())
         .marginCurrency(bitgetMarketOrder.getInstrument().getCounter())
         .size(bitgetMarketOrder.getOriginalAmount())
         .orderSide(bitgetMarketOrder.getType())
         .orderType(BitgetFuturesOrderType.MARKET)
         .clientOid(bitgetMarketOrder.getUserReference())
+        .reduceOnly(bitgetMarketOrder.getReduceOnly())
         .build();
   }
 

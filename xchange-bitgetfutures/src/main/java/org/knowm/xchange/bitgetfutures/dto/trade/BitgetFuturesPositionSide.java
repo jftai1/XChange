@@ -8,25 +8,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderPositionSide {
+public enum BitgetFuturesPositionSide {
 
   LONG("long"),
-  SHORT("short"),
-  NET("net");
+  SHORT("short");
 
-  private static final Map<String, BitgetFuturesOrderPositionSide> LOOKUP =
+  private static final Map<String, BitgetFuturesPositionSide> LOOKUP =
       Arrays.stream(values())
-          .collect(Collectors.toMap(BitgetFuturesOrderPositionSide::getValue, Function.identity()));
+          .collect(Collectors.toMap(BitgetFuturesPositionSide::getValue, Function.identity()));
   @JsonValue
   private final String value;
 
   @JsonCreator
-  public static BitgetFuturesOrderPositionSide getPositionDirection(String s) {
-    BitgetFuturesOrderPositionSide value = LOOKUP.get(s);
+  public static BitgetFuturesPositionSide getPositionSide(String s) {
+    BitgetFuturesPositionSide value = LOOKUP.get(s);
     if (value == null) {
       throw new IllegalArgumentException("Unknown position direction: " + s);
     }

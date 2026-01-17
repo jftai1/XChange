@@ -8,24 +8,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderMarginMode implements IOrderFlags {
+public enum BitgetFuturesMarginMode {
 
   CROSSED("crossed"),
   ISOLATED("isolated");
 
-  private static final Map<String, BitgetFuturesOrderMarginMode> LOOKUP =
+  private static final Map<String, BitgetFuturesMarginMode> LOOKUP =
       Arrays.stream(values())
-          .collect(Collectors.toMap(BitgetFuturesOrderMarginMode::getValue, Function.identity()));
+          .collect(Collectors.toMap(BitgetFuturesMarginMode::getValue, Function.identity()));
   @JsonValue
   private final String value;
 
   @JsonCreator
-  public static BitgetFuturesOrderMarginMode getMarginMode(String s) {
-    BitgetFuturesOrderMarginMode value = LOOKUP.get(s);
+  public static BitgetFuturesMarginMode getMode(String s) {
+    BitgetFuturesMarginMode value = LOOKUP.get(s);
     if (value == null) {
       throw new IllegalArgumentException("Unknown order margin mode: " + s);
     }

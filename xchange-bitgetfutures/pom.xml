@@ -11,7 +11,7 @@
 
   <artifactId>xchange-bitgetfutures</artifactId>
 
-  <name>XChange Bitget</name>
+  <name>XChange Bitget Futures</name>
   <description>XChange implementation for the Bitget Exchange Futures</description>
 
   <dependencies>
@@ -42,6 +42,13 @@
     <dependency>
       <groupId>org.wiremock</groupId>
       <artifactId>wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>4.2.0</version>
       <scope>test</scope>
     </dependency>
 

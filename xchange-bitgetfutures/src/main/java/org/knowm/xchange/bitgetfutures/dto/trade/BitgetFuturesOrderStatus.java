@@ -12,7 +12,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderStatus implements IOrderFlags {
+public enum BitgetFuturesOrderStatus {
 
   PENDING("live"),
   PARTIALLY_FILLED("partially_filled"),

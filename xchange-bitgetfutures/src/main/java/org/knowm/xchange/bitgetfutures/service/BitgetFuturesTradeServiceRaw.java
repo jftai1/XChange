@@ -1,14 +1,21 @@
 package org.knowm.xchange.bitgetfutures.service;
 
+import jakarta.ws.rs.QueryParam;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
+import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
+import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.instrument.Instrument;
 
 public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
 
@@ -82,6 +89,27 @@ public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
             exchange.getNonceFactory(),
             buildDemoHeaderParamValue(),
             bitgetPlaceOrderDto)
+        .getData();
+  }
+
+  public List<BitgetFuturesPositionDto> positions(
+      BitgetFuturesProductType futuresProductType)  throws IOException{
+    return positions(futuresProductType, null);
+  }
+
+  public List<BitgetFuturesPositionDto> positions(
+      BitgetFuturesProductType futuresProductType,
+      Currency currency)  throws IOException{
+    String marginCoin = (currency == null ? null : currency.getCurrencyCode());
+    return bitgetAuthenticated
+        .positions(
+            apiKey,
+            bitgetDigest,
+            passphrase,
+            exchange.getNonceFactory(),
+            buildDemoHeaderParamValue(),
+            futuresProductType.getCode(),
+            marginCoin)
         .getData();
   }
 

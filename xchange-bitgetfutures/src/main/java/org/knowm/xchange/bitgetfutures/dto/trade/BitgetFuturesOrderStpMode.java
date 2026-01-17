@@ -13,7 +13,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderStpMode implements IOrderFlags {
+public enum BitgetFuturesOrderStpMode {
 
   NONE("none"),
   CANCEL_TAKER("cancel_taker"),

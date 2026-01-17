@@ -32,7 +32,7 @@ public class BitgetFuturesPlaceOrderDto {
   private String productType;
 
   @JsonProperty("marginMode")
-  private BitgetFuturesOrderMarginMode marginMode;
+  private BitgetFuturesMarginMode marginMode;
 
   /**
    * Margin coin
@@ -65,10 +65,12 @@ public class BitgetFuturesPlaceOrderDto {
   private Order.OrderType orderSide;
 
   /**
-   * Trade type Only required in hedge-mode open: Open position close: Close position
+   * Trade type Only required in hedge-mode open:
+   * Open position
+   * close: Close position
    */
   @JsonProperty("tradeSide")
-  private String tradeSide;
+  private BitgetFuturesOrderTradeSidePositionMode tradeSide;
 
   /**
    * Order type limit: limit orders market: market orders

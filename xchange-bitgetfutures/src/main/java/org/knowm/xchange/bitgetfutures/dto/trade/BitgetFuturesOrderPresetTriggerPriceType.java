@@ -12,7 +12,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderPresetTriggerPriceType implements IOrderFlags {
+public enum BitgetFuturesOrderPresetTriggerPriceType {
 
   MARKET_PRICE("fill_price"),
   MARK_PRICE("mark_price");

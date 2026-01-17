@@ -8,26 +8,25 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderType {
+public enum BitgetFuturesAssetMode {
 
-  LIMIT("limit"),
-  MARKET("market");
+  SINGLE("single"),
+  UNION("union");
 
-  private static final Map<String, BitgetFuturesOrderType> LOOKUP =
+  private static final Map<String, BitgetFuturesAssetMode> LOOKUP =
       Arrays.stream(values())
-          .collect(Collectors.toMap(BitgetFuturesOrderType::getValue, Function.identity()));
+          .collect(Collectors.toMap(BitgetFuturesAssetMode::getValue, Function.identity()));
   @JsonValue
   private final String value;
 
   @JsonCreator
-  public static BitgetFuturesOrderType getOrderType(String s) {
-    BitgetFuturesOrderType value = LOOKUP.get(s);
+  public static BitgetFuturesAssetMode getMode(String s) {
+    BitgetFuturesAssetMode value = LOOKUP.get(s);
     if (value == null) {
-      throw new IllegalArgumentException("Unknown order type: " + s);
+      throw new IllegalArgumentException("Unknown asset mode: " + s);
     }
     return value;
   }

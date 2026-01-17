@@ -12,7 +12,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderCancelReason implements IOrderFlags {
+public enum BitgetFuturesOrderCancelReason {
 
   NORMAL("normal_cancel"),
   STP("stp_cancel");

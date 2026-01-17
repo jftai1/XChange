@@ -3,7 +3,6 @@ package org.knowm.xchange.bitgetfutures.dto.trade;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
-import lombok.Builder;
 import lombok.Getter;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 import org.knowm.xchange.dto.trade.MarketOrder;
@@ -16,14 +15,18 @@ import org.knowm.xchange.instrument.Instrument;
 public class BitgetFuturesMarketOrder extends MarketOrder {
 
   private BitgetFuturesProductType productType;
-  private BitgetFuturesOrderMarginMode marginMode;
+  private BitgetFuturesMarginMode marginMode;
+  private BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode;
+  private Boolean reduceOnly;
 
   @lombok.Builder
   public BitgetFuturesMarketOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal averagePrice,
@@ -37,14 +40,18 @@ public class BitgetFuturesMarketOrder extends MarketOrder {
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
   }
 
   @lombok.Builder
   public BitgetFuturesMarketOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal averagePrice,
@@ -57,14 +64,18 @@ public class BitgetFuturesMarketOrder extends MarketOrder {
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
   }
 
   @lombok.Builder
   public BitgetFuturesMarketOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp) {
     super(type, originalAmount, instrument, id, timestamp);
@@ -72,32 +83,42 @@ public class BitgetFuturesMarketOrder extends MarketOrder {
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
   }
 
   @lombok.Builder
   public BitgetFuturesMarketOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       Date timestamp) {
     super(type, originalAmount, instrument, timestamp);
     Objects.requireNonNull(productType, "productType must not be null");
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
   }
 
   @lombok.Builder
   public BitgetFuturesMarketOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
-      Instrument instrument) {
+      Instrument instrument,
+      Boolean reduceOnly) {
     super(type, originalAmount, instrument);
     Objects.requireNonNull(productType, "productType must not be null");
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
   }
 }

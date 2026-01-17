@@ -54,7 +54,7 @@ public class BitgetFuturesQueryOrderHistoryParams extends DefaultQueryOrderParam
       Date startTime,
       Date endTime,
       Integer limit) {
-    super(null, null);
+    super(instrument, orderId);
     Objects.requireNonNull(productType, "Product type is required");
     this.productType = productType;
     this.clientOid = clientOid;

@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import org.knowm.xchange.bitgetfutures.config.converter.StringToCurrencyConverter;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesAssetMode;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionMode;
 import org.knowm.xchange.currency.Currency;
 
 /**
@@ -86,17 +89,17 @@ public class BitgetFuturesAccountBalanceDetailDto {
    * Margin mode. isolated – isolated margin mode; crossed – cross margin mode
    */
   @JsonProperty("marginMode")
-  private MarginMode marginMode;
+  private BitgetFuturesMarginMode marginMode;
   /**
    * Position mode one_way_mode: one-way mode hedge_mode: hedge mode
    */
   @JsonProperty("posMode")
-  private PositionMode positionMode;
+  private BitgetFuturesPositionMode positionMode;
   /**
    * Unrealized PnL
    */
   @JsonProperty("unrealizedPL")
-  private BigDecimal unrealizedPL;
+  private BigDecimal unrealizedProfitAndLoss;
   /**
    * Trading bonus.
    */
@@ -106,36 +109,17 @@ public class BitgetFuturesAccountBalanceDetailDto {
    * UnrealizedPL for crossed.
    */
   @JsonProperty("crossedUnrealizedPL")
-  private BigDecimal crossedUnrealizedPL;
+  private BigDecimal crossedUnrealizedProfitAndLoss;
   /**
    * UnrealizedPL for isolated.
    */
   @JsonProperty("isolatedUnrealizedPL")
-  private BigDecimal isolatedUnrealizedPL;
+  private BigDecimal isolatedUnrealizedProfitAndLoss;
+
   /**
    * Assets mode union Multi-assets mode single Single-assets mode
    */
   @JsonProperty("assetMode")
-  private AssetMode assetMode;
+  private BitgetFuturesAssetMode assetMode;
 
-  public enum MarginMode {
-    @JsonProperty("crossed")
-    CROSSED,
-    @JsonProperty("isolated")
-    ISOLATED
-  }
-
-  public enum PositionMode {
-    @JsonProperty("one_way_mode")
-    ONE_WAY_POSITION,
-    @JsonProperty("hedge_mode")
-    TWO_WAY_POSITION
-  }
-
-  public enum AssetMode {
-    @JsonProperty("union")
-    UNION,
-    @JsonProperty("single")
-    SINGLE
-  }
 }

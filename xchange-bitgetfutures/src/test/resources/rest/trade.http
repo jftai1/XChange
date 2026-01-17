@@ -10,6 +10,18 @@ ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
 
+### Get Pending Orders (USDT-FUTURES) demo
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+GET {{api_host}}/api/v2/mix/order/orders-pending?productType=USDT-FUTURES
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+paptrading: 1
+
 ### Get Order Fills (USDT-FUTURES) demo
 < {%
   import {gen_sign} from 'sign.js'
@@ -21,3 +33,38 @@ ACCESS-SIGN: {{sign}}
 ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
+
+### Cancel all orders for USDT-FUTURES
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/order/cancel-all-orders
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "marginCoin": "USDT"
+}
+
+### Flash close positions for USDT-FUTURES
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/order/close-positions
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES"
+}

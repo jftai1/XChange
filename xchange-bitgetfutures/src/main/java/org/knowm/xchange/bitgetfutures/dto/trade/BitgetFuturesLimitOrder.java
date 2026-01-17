@@ -3,7 +3,6 @@ package org.knowm.xchange.bitgetfutures.dto.trade;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
-import lombok.Builder;
 import lombok.Getter;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 import org.knowm.xchange.dto.trade.LimitOrder;
@@ -13,14 +12,14 @@ import org.knowm.xchange.instrument.Instrument;
 public class BitgetFuturesLimitOrder extends LimitOrder {
 
   private BitgetFuturesProductType productType;
-  private BitgetFuturesOrderMarginMode marginMode;
+  private BitgetFuturesMarginMode marginMode;
   private BigDecimal presetStopSurplusPrice;
   private BigDecimal presetStopLossPrice;
 
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
       BigDecimal originalAmount,
       Instrument instrument,
       String id,
@@ -40,7 +39,7 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
       BigDecimal originalAmount,
       BigDecimal cumulativeAmount,
       Instrument instrument,
@@ -61,7 +60,7 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
       BigDecimal originalAmount,
       Instrument instrument,
       String id,
@@ -87,7 +86,7 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
-      BitgetFuturesOrderMarginMode marginMode,
+      BitgetFuturesMarginMode marginMode,
       BigDecimal originalAmount,
       Instrument instrument,
       String id,

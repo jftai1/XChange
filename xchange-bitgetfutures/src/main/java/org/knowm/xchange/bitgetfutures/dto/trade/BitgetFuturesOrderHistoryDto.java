@@ -142,7 +142,7 @@ public class BitgetFuturesOrderHistoryDto {
      * Margin mode
      */
     @JsonProperty("marginMode")
-    private BitgetFuturesOrderMarginMode marginMode;
+    private BitgetFuturesMarginMode marginMode;
 
     /**
      * Whether or not to just reduce the position.
@@ -186,7 +186,7 @@ public class BitgetFuturesOrderHistoryDto {
      * Position mode
      */
     @JsonProperty("posMode")
-    private BitgetFuturesOrderPositionMode positionMode;
+    private BitgetFuturesPositionMode positionMode;
 
     /**
      * Order type limit: limit order market: market order

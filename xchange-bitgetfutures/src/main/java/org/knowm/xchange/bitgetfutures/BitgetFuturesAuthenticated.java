@@ -20,6 +20,7 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -227,7 +228,7 @@ public interface BitgetFuturesAuthenticated {
 
   @GET
   @Path("api/v2/mix/position/all-position")
-  BitgetFuturesResponse<List<BitgetFuturesAccountBalanceInfoDto>> positions(
+  BitgetFuturesResponse<List<BitgetFuturesPositionDto>> positions(
       @HeaderParam("ACCESS-KEY") String apiKey,
       @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
@@ -235,8 +236,7 @@ public interface BitgetFuturesAuthenticated {
       @HeaderParam("paptrading") String demo,
       @QueryParam("productType") String productType,
       @QueryParam("marginCoin") String marginCoin
-  )
-      throws IOException, BitgetFuturesException;
+  ) throws IOException, BitgetFuturesException;
 
 
 }

@@ -8,24 +8,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderPositionMode implements IOrderFlags {
+public enum BitgetFuturesPositionMode {
 
-  ONE_WAY_POSITION("one_way_mode"),
-  TWO_WAY_POSITION("hedge_mode");
+  ONE_WAY_MODE("one_way_mode"),
+  HEDGE_MODE("hedge_mode");
 
-  private static final Map<String, BitgetFuturesOrderPositionMode> LOOKUP =
+  private static final Map<String, BitgetFuturesPositionMode> LOOKUP =
       Arrays.stream(values())
-          .collect(Collectors.toMap(BitgetFuturesOrderPositionMode::getValue, Function.identity()));
+          .collect(Collectors.toMap(BitgetFuturesPositionMode::getValue, Function.identity()));
   @JsonValue
   private final String value;
 
   @JsonCreator
-  public static BitgetFuturesOrderPositionMode getPositionMode(String s) {
-    BitgetFuturesOrderPositionMode value = LOOKUP.get(s);
+  public static BitgetFuturesPositionMode getPositionMode(String s) {
+    BitgetFuturesPositionMode value = LOOKUP.get(s);
     if (value == null) {
       throw new IllegalArgumentException("Unknown position mode: " + s);
     }
