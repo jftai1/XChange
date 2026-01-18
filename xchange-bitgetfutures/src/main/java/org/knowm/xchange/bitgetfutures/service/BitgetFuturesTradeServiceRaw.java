@@ -16,6 +16,7 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountLeverageParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountMarginModeParamsDto;
@@ -99,6 +100,20 @@ public class BitgetFuturesTradeServiceRaw extends BitgetFuturesBaseService {
             bitgetPlaceOrderDto)
         .getData();
   }
+
+  public BitgetFuturesOrderUpdateInfoDto createTakeProfitStopLossOrder(
+      BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto bitgetFuturesPlaceTakeProfitStopLossOrderParamsDto)
+      throws IOException {
+    return bitgetAuthenticated
+        .createTakeProfitStopLossOrder(
+            apiKey,
+            bitgetDigest,
+            passphrase,
+            exchange.getNonceFactory(),
+            buildDemoHeaderParamValue(),
+            bitgetFuturesPlaceTakeProfitStopLossOrderParamsDto).getData();
+  }
+
 
   public List<BitgetFuturesPositionDto> positions(
       BitgetFuturesProductType futuresProductType)  throws IOException{

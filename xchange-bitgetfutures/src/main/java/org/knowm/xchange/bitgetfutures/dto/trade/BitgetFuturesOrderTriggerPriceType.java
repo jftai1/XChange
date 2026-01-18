@@ -8,25 +8,24 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 
 @Getter
 @RequiredArgsConstructor
-public enum BitgetFuturesOrderPresetTriggerPriceType {
+public enum BitgetFuturesOrderTriggerPriceType {
 
   MARKET_PRICE("fill_price"),
   MARK_PRICE("mark_price");
 
-  private static final Map<String, BitgetFuturesOrderPresetTriggerPriceType> LOOKUP =
+  private static final Map<String, BitgetFuturesOrderTriggerPriceType> LOOKUP =
       Arrays.stream(values()).collect(
-          Collectors.toMap(BitgetFuturesOrderPresetTriggerPriceType::getValue,
+          Collectors.toMap(BitgetFuturesOrderTriggerPriceType::getValue,
               Function.identity()));
   @JsonValue
   private final String value;
 
   @JsonCreator
-  public static BitgetFuturesOrderPresetTriggerPriceType getPresetTriggerPriceType(String s) {
-    BitgetFuturesOrderPresetTriggerPriceType value = LOOKUP.get(s);
+  public static BitgetFuturesOrderTriggerPriceType getPresetTriggerPriceType(String s) {
+    BitgetFuturesOrderTriggerPriceType value = LOOKUP.get(s);
     if (value == null) {
       throw new IllegalArgumentException("Unknown order preset trigger price type: " + s);
     }

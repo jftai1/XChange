@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
@@ -21,13 +22,14 @@ import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.trade.UserTrades;
 
 class BitgetFuturesTradeServiceIntegrationTest extends
     BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   @Test
-  void valid_query_orders_udst() throws IOException {
+  void get_orders_udst() throws IOException {
     BitgetFuturesQueryOrderHistoryParams params = BitgetFuturesQueryOrderHistoryParams.builder()
         .productType(BitgetFuturesProductType.USDT_FUTURES)
         .build();
@@ -47,7 +49,7 @@ class BitgetFuturesTradeServiceIntegrationTest extends
   }
 
   @Test
-  void valid_query_single_order_udst() throws IOException {
+  void get_single_order_udst() throws IOException {
     BitgetFuturesQueryOrderHistoryParams params = BitgetFuturesQueryOrderHistoryParams.builder()
         .productType(BitgetFuturesProductType.USDT_FUTURES)
         .build();
@@ -71,7 +73,7 @@ class BitgetFuturesTradeServiceIntegrationTest extends
 
 
   @Test
-  void valid_trade_history_udst() throws IOException {
+  void get_trade_history_udst() throws IOException {
     BitgetFuturesTradeHistoryParams params = BitgetFuturesTradeHistoryParams.builder()
         .productType(BitgetFuturesProductType.USDT_FUTURES)
         .build();
@@ -105,7 +107,7 @@ class BitgetFuturesTradeServiceIntegrationTest extends
             .originalAmount(BigDecimal.valueOf(amount))
             .type(OrderType.BID)
             .userReference(buyOrderReference)
-        .build();
+            .build();
     // SELL Order
     BitgetFuturesMarketOrder sellMarketOrder =
         BitgetFuturesMarketOrder.builder()
@@ -134,10 +136,14 @@ class BitgetFuturesTradeServiceIntegrationTest extends
           // Log order
           logger.info("Order: {}", buyOrders.stream().findFirst().get());
           assertThat(buyOrders.stream().findFirst().get().getId()).isEqualTo(buyOrderId);
-          assertThat(buyOrders.stream().findFirst().get().getOriginalAmount()).isEqualTo(BigDecimal.valueOf(amount));
-          assertThat(buyOrders.stream().findFirst().get().getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
-          assertThat(buyOrders.stream().findFirst().get().getUserReference()).isEqualTo(buyOrderReference);
-          assertThat(buyOrders.stream().findFirst().get().getStatus()).isEqualTo(Order.OrderStatus.FILLED);
+          assertThat(buyOrders.stream().findFirst().get().getOriginalAmount()).isEqualTo(
+              BigDecimal.valueOf(amount));
+          assertThat(buyOrders.stream().findFirst().get().getInstrument()).isEqualTo(
+              CurrencyPair.BTC_USDT);
+          assertThat(buyOrders.stream().findFirst().get().getUserReference()).isEqualTo(
+              buyOrderReference);
+          assertThat(buyOrders.stream().findFirst().get().getStatus()).isEqualTo(
+              Order.OrderStatus.FILLED);
           // Place SELL order
           String sellOrderId = exchange.getTradeService().placeMarketOrder(sellMarketOrder);
           BitgetFuturesQueryOrderHistoryParams sellOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
@@ -147,13 +153,15 @@ class BitgetFuturesTradeServiceIntegrationTest extends
           Collection<Order> sellOrders = exchange.getTradeService().getOrder(sellOrderParams);
           assertThat(sellOrders).size().isEqualTo(1);
           assertThat(sellOrders.stream().findFirst().get().getId()).isEqualTo(sellOrderId);
-          assertThat(sellOrders.stream().findFirst().get().getOriginalAmount()).isEqualTo(BigDecimal.valueOf(amount));
-          assertThat(sellOrders.stream().findFirst().get().getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
-          assertThat(sellOrders.stream().findFirst().get().getUserReference()).isEqualTo(sellOrderReference);
-          assertThat(sellOrders.stream().findFirst().get().getStatus()).isEqualTo(Order.OrderStatus.FILLED);
+          assertThat(sellOrders.stream().findFirst().get().getOriginalAmount()).isEqualTo(
+              BigDecimal.valueOf(amount));
+          assertThat(sellOrders.stream().findFirst().get().getInstrument()).isEqualTo(
+              CurrencyPair.BTC_USDT);
+          assertThat(sellOrders.stream().findFirst().get().getUserReference()).isEqualTo(
+              sellOrderReference);
+          assertThat(sellOrders.stream().findFirst().get().getStatus()).isEqualTo(
+              Order.OrderStatus.FILLED);
         });
   }
-
-
 
 }

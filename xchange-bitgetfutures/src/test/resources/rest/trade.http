@@ -34,6 +34,73 @@ ACCESS-TIMESTAMP: {{timestamp}}
 ACCESS-PASSPHRASE: {{api_passphrase}}
 paptrading: 1
 
+### Place market order USDT-FUTURES, BTCUSDT
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/order/place-order
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "symbol": "BTCUSDT",
+  "marginCoin": "USDT",
+  "marginMode": "isolated",
+  "side" : "buy",
+  "orderType": "market",
+  "size": "0.001"
+}
+
+### Place position stop loss USDT-FUTURES, BTCUSDT
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/order/place-tpsl-order
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "symbol": "BTCUSDT",
+  "marginCoin": "USDT",
+  "planType": "loss_plan",
+  "triggerPrice": "90000",
+  "triggerType": "mark_price",
+  "holdSide": "buy",
+  "size": "0.001"
+}
+
+### Cancel position stop loss USDT-FUTURES, BTCUSDT
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/order/cancel-plan-order
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "symbol": "BTCUSDT",
+  "marginCoin": "USDT",
+  "planType": "loss_plan"
+}
+
 ### Cancel all orders for USDT-FUTURES
 < {%
   import {gen_sign} from 'sign.js'

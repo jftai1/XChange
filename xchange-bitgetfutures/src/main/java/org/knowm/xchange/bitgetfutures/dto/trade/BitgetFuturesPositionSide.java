@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 public enum BitgetFuturesPositionSide {
 
   LONG("long"),
-  SHORT("short");
+  SHORT("short"),
+  BUY("buy"),
+  SELL("sell");
 
   private static final Map<String, BitgetFuturesPositionSide> LOOKUP =
       Arrays.stream(values())

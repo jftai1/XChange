@@ -14,11 +14,13 @@ import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesCancelTakeProfitStopLossOrderResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesClosePositionsResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountLeverageResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountMarginModeResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountPositionModeResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesCancelOrderParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesCancelTakeProfitStopLossOrderParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesClosePositionsParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
@@ -29,6 +31,7 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountLeverageParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountMarginModeParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountPositionModeParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -241,6 +244,49 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("limit") Integer limit)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Ignore the tradeSide parameter when position mode is in one-way-mode
+   * <p>
+   * In “hedge-mode”, when there is limit close order occupying the position, if the size of next
+   * market close order and limit close orders exceeds the position size, it will return an
+   * “insufficient position error” instead of cancelling the current limit order and executing the
+   * market order
+   * <p>
+   * hedge position mode: Open long: "side"=buy, "tradeSide"=open; Close long: "side"=buy,
+   * "tradeSide"=close; Open short: "side"=sell, "tradeSide"=open; Close short: "side"=sell,
+   * "tradeSide"=close; one-way position mode: "side"=buy and sell, tradeSide: ignore
+   * <p>
+   * In one-way-mode position mode, if the total size of the new reduce-only order and the existing
+   * reduce-only orders exceeds the position size, the system will cancel the existing reduce-only
+   * orders sequentially based on their creation order until the total size of the new and existing
+   * reduce-only orders is less than or equal to the position size. Additionally, the response for
+   * the latest reduce-only order request will not include an orderId. You can use the clientOid set
+   * in the request to query order details or retrieve the orderId from the current pending orders.
+   * <p>
+   * When in hedge Mode, if a limit close order is occupying a position, and a subsequent market
+   * close order (its quantity plus the limit order's quantity) exceeds the total position size, it
+   * will not report an insufficient position error. It also won't cancel the limit order that's
+   * occupying the position. Instead, the quantity of the limit close order will be preserved, and
+   * the market order will close only the quantity remaining after subtracting the limit order's
+   * quantity from the total position size. For example: If you have a position of 100, a limit
+   * order occupies 70, and you then place a market close order for 50, it will not report an
+   * insufficient position error, nor will it cancel the occupying limit order to execute the market
+   * order. Instead, it will directly close a quantity of 30.
+   * <p>
+   * When in hedge Mode,if the existing quantity is equal to the limit close position order of the
+   * held position, a newly added close position order will automatically cancel the limit order
+   * that has occupied the position.
+   *
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param bitgetPlaceOrderDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @POST
   @Path("api/v2/mix/order/place-order")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -253,6 +299,17 @@ public interface BitgetFuturesAuthenticated {
       BitgetFuturesPlaceOrderDto bitgetPlaceOrderDto)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Cancel a pending order
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param bitgetCancelOrderParamsDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @POST
   @Path("api/v2/mix/order/cancel-order")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -262,6 +319,30 @@ public interface BitgetFuturesAuthenticated {
       @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
       @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
       BitgetFuturesCancelOrderParamsDto bitgetCancelOrderParamsDto)
+      throws IOException, BitgetFuturesException;
+
+  @POST
+  @Path("api/v2/mix/order/place-tpsl-order")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFuturesOrderUpdateInfoDto> createTakeProfitStopLossOrder(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto bitgetFuturesPlaceTakeProfitStopLossOrderParamsDto)
+      throws IOException, BitgetFuturesException;
+
+  @POST
+  @Path("api/v2/mix/order/cancel-plan-order")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFururesCancelTakeProfitStopLossOrderResponseDto> cancelTakeProfitStopLossOrder(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesCancelTakeProfitStopLossOrderParamsDto bitgetFuturesCancelTakeProfitStopLossOrderParamsDto)
       throws IOException, BitgetFuturesException;
 
   @GET

@@ -13,6 +13,8 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 import org.knowm.xchange.dto.Order;
@@ -20,6 +22,7 @@ import org.knowm.xchange.dto.account.OpenPositions;
 import org.knowm.xchange.dto.marketdata.Trades.TradeSortType;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.TradeService;
@@ -72,6 +75,20 @@ public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw impl
       BitgetFuturesMarketOrder bitgetMarketOrder = (BitgetFuturesMarketOrder) marketOrder;
       return createOrder(BitgetFuturesAdapters.toBitgetPlaceOrderDto(bitgetMarketOrder)).getOrderId();
     } catch (BitgetFuturesException e) {
+      throw BitgetFuturesErrorAdapter.adapt(e);
+    }
+  }
+
+  @Override
+  public String placeStopOrder(StopOrder stopOrder) throws IOException {
+    try{
+      // Place market order
+      // Place TPSL order
+      BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto tpslOrder = null;
+      BitgetFuturesOrderUpdateInfoDto orderUpdateInfoDto = createTakeProfitStopLossOrder(tpslOrder);
+      return orderUpdateInfoDto.getOrderId();
+    }
+    catch (BitgetFuturesException e) {
       throw BitgetFuturesErrorAdapter.adapt(e);
     }
   }

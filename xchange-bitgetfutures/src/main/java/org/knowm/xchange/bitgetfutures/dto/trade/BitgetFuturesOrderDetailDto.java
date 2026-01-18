@@ -232,7 +232,7 @@ public class BitgetFuturesOrderDetailDto {
    * Preset Take Profit Trigger type
    */
   @JsonProperty("presetStopSurplusType")
-  private BitgetFuturesOrderPresetTriggerPriceType presetStopSurplusTriggerType;
+  private BitgetFuturesOrderTriggerPriceType presetStopSurplusTriggerType;
 
   /**
    * Preset Take Profit Execution price
@@ -244,7 +244,7 @@ public class BitgetFuturesOrderDetailDto {
    * Preset Stop Loss Trigger type
    */
   @JsonProperty("presetStopLossType")
-  private BitgetFuturesOrderPresetTriggerPriceType presetStopLossTriggerType;
+  private BitgetFuturesOrderTriggerPriceType presetStopLossTriggerType;
 
   /**
    * Preset Stop Loss Execution price

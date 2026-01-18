@@ -153,9 +153,11 @@ public class BitgetFuturesAdapters {
     Order.Builder builder;
     switch (orderHistoryEntry.getOrderType()) {
       case MARKET:
+        // TODO use specific class
         builder = new MarketOrder.Builder(orderType, instrument);
         break;
       case LIMIT:
+        // TODO use specific class
         builder = new LimitOrder.Builder(orderType, instrument).limitPrice(
             orderHistoryEntry.getPrice());
         break;
