@@ -51,3 +51,43 @@ paptrading: 1
   "productType": "USDT-FUTURES",
   "posMode": "one_way_mode"
 }
+
+### Set Margin Mode for USDT-FUTURES isolated
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/account/set-margin-mode
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "symbol": "BTCUSDT",
+  "marginCoin": "USDT",
+  "marginMode": "isolated"
+}
+
+### Set Leverage for USDT-FUTURES
+< {%
+  import {gen_sign} from 'sign.js'
+  gen_sign(request);
+%}
+POST {{api_host}}/api/v2/mix/account/set-leverage
+ACCESS-KEY: {{api_key}}
+ACCESS-SIGN: {{sign}}
+ACCESS-TIMESTAMP: {{timestamp}}
+ACCESS-PASSPHRASE: {{api_passphrase}}
+Content-Type: application/json
+paptrading: 1
+
+{
+  "productType": "USDT-FUTURES",
+  "symbol": "BTCUSDT",
+  "marginCoin": "USDT",
+  "leverage": "2"
+}

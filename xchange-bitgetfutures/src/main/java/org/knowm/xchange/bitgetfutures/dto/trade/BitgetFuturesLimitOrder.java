@@ -13,56 +13,84 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
 
   private BitgetFuturesProductType productType;
   private BitgetFuturesMarginMode marginMode;
+  private BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode;
+  private Boolean reduceOnly;
   private BigDecimal presetStopSurplusPrice;
   private BigDecimal presetStopLossPrice;
 
+
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
       BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal limitPrice,
       BigDecimal presetStopSurplusPrice,
       BigDecimal presetStopLossPrice) {
-    super(type, originalAmount, instrument, id, timestamp, limitPrice);
-    Objects.requireNonNull(productType, "productType must not be null");
-    this.productType = productType;
-    Objects.requireNonNull(marginMode, "marginMode must not be null");
-    this.marginMode = marginMode;
-    this.presetStopSurplusPrice = presetStopSurplusPrice;
-    this.presetStopLossPrice = presetStopLossPrice;
+    this(productType,
+        type,
+        marginMode,
+        tradeSidePositionMode,
+        originalAmount,
+        instrument,
+        reduceOnly,
+        id,
+        timestamp,
+        limitPrice,
+        null,
+        presetStopSurplusPrice,
+        presetStopLossPrice,
+        null,
+        null,
+        null);
   }
 
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
       BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       BigDecimal cumulativeAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal limitPrice,
       BigDecimal presetStopSurplusPrice,
       BigDecimal presetStopLossPrice) {
-    super(type, originalAmount, cumulativeAmount, instrument, id, timestamp, limitPrice);
-    Objects.requireNonNull(productType, "productType must not be null");
-    this.productType = productType;
-    Objects.requireNonNull(marginMode, "marginMode must not be null");
-    this.marginMode = marginMode;
-    this.presetStopSurplusPrice = presetStopSurplusPrice;
-    this.presetStopLossPrice = presetStopLossPrice;
+    this(productType,
+        type,
+        marginMode,
+        tradeSidePositionMode,
+        originalAmount,
+        instrument,
+        reduceOnly,
+        id,
+        timestamp,
+        limitPrice,
+        null,
+        presetStopSurplusPrice,
+        presetStopLossPrice,
+        cumulativeAmount,
+        null,
+        null,
+        null);
   }
 
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
       BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal limitPrice,
@@ -72,23 +100,33 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
       BigDecimal cumulativeAmount,
       BigDecimal fee,
       OrderStatus status) {
-    super(type, originalAmount, instrument, id, timestamp, limitPrice, averagePrice,
+    this(productType,
+        type,
+        marginMode,
+        tradeSidePositionMode,
+        originalAmount,
+        instrument,
+        reduceOnly,
+        id,
+        timestamp,
+        limitPrice,
+        averagePrice,
+        presetStopSurplusPrice,
+        presetStopLossPrice,
         cumulativeAmount,
-        fee, status);
-    Objects.requireNonNull(productType, "productType must not be null");
-    this.productType = productType;
-    Objects.requireNonNull(marginMode, "marginMode must not be null");
-    this.marginMode = marginMode;
-    this.presetStopSurplusPrice = presetStopSurplusPrice;
-    this.presetStopLossPrice = presetStopLossPrice;
+        fee,
+        status,
+        null);
   }
 
   @lombok.Builder
   public BitgetFuturesLimitOrder(BitgetFuturesProductType productType,
       OrderType type,
       BitgetFuturesMarginMode marginMode,
+      BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode,
       BigDecimal originalAmount,
       Instrument instrument,
+      Boolean reduceOnly,
       String id,
       Date timestamp,
       BigDecimal limitPrice,
@@ -106,6 +144,8 @@ public class BitgetFuturesLimitOrder extends LimitOrder {
     this.productType = productType;
     Objects.requireNonNull(marginMode, "marginMode must not be null");
     this.marginMode = marginMode;
+    this.tradeSidePositionMode = tradeSidePositionMode;
+    this.reduceOnly = reduceOnly;
     this.presetStopSurplusPrice = presetStopSurplusPrice;
     this.presetStopLossPrice = presetStopLossPrice;
   }

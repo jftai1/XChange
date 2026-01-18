@@ -14,13 +14,21 @@ import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesResponse;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesClosePositionsResponseDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountLeverageResponseDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountMarginModeResponseDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountPositionModeResponseDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesCancelOrderParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesClosePositionsParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountLeverageParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountMarginModeParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountPositionModeParamsDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -79,6 +87,95 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("symbol") String symbol,
       @QueryParam("marginCoin") String marginCoin)
       throws IOException, BitgetFuturesException;
+
+
+  /**
+   * Adjust the position mode between 'one way mode' and 'hedge mode'
+   *
+   * If you want to change the user's position mode on all symbol contracts,
+   * you need to specify hedge mode positions or one-way positions.
+   *
+   * Note: The position mode can't be adjusted when there is an open position order under the product type.
+   * Changes the user's position mode for all symbol futures: hedging mode or one-way mode.
+   * When users hold positions or orders on any side of any trading pair in the specific product type,
+   * the request may fail.
+   *
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param bitgetFuturesSetAccountPositionModeParamsDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
+  @POST
+  @Path("api/v2/mix/account/set-position-mode")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFururesSetAccountPositionModeResponseDto> setAccountPositionMode(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesSetAccountPositionModeParamsDto bitgetFuturesSetAccountPositionModeParamsDto
+  ) throws IOException, BitgetFuturesException;
+
+  /**
+   * This interface cannot be used when the users have an open position or an order.
+   *
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param bitgetFuturesSetAccountMarginModeParamsDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
+  @POST
+  @Path("api/v2/mix/account/set-margin-mode")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFururesSetAccountMarginModeResponseDto> setAccountMarginMode(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesSetAccountMarginModeParamsDto bitgetFuturesSetAccountMarginModeParamsDto
+  ) throws IOException, BitgetFuturesException;
+
+  /**
+   * Adjust the leverage on the given symbol and productType
+   *
+   * Note: When adjusting leverage in cross margin mode, please use the leverage parameter
+   * instead of longLeverage or shortLeverage. Currently, there is no mandatory validation
+   * for longLeverage and shortLeverage. If these two parameters are passed in cross margin mode,
+   * they will still take effect, with longLeverage taking priority.
+   *
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param bitgetFuturesSetAccountLeverageParamsDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
+  @POST
+  @Path("api/v2/mix/account/set-leverage")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFururesSetAccountLeverageResponseDto> setAccountLeverage(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesSetAccountLeverageParamsDto bitgetFuturesSetAccountLeverageParamsDto
+  ) throws IOException, BitgetFuturesException;
 
   /**
    * Get order detail
@@ -226,6 +323,19 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("limit") Integer limit)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * Returns information about all current positions with the given productType
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param productType
+   * @param marginCoin
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/position/all-position")
   BitgetFuturesResponse<List<BitgetFuturesPositionDto>> positions(
@@ -238,5 +348,28 @@ public interface BitgetFuturesAuthenticated {
       @QueryParam("marginCoin") String marginCoin
   ) throws IOException, BitgetFuturesException;
 
+  /**
+   * Close position at market price
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param bitgetFuturesClosePositionsParamsDto
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
+  @POST
+  @Path("api/v2/mix/order/close-positions")
+  @Consumes(MediaType.APPLICATION_JSON)
+  BitgetFuturesResponse<BitgetFururesClosePositionsResponseDto> closePositions(
+      @HeaderParam("ACCESS-KEY") String apiKey,
+      @HeaderParam("ACCESS-SIGN") ParamsDigest signer,
+      @HeaderParam("ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("ACCESS-TIMESTAMP") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("paptrading") String demo,
+      BitgetFuturesClosePositionsParamsDto bitgetFuturesClosePositionsParamsDto
+  ) throws IOException, BitgetFuturesException;
 
 }

@@ -31,6 +31,11 @@ public class BitgetFuturesPlaceOrderDto {
   @JsonProperty("productType")
   private String productType;
 
+  /**
+   * Position mode
+   * isolated: isolated margin
+   * crossed: crossed margin
+   */
   @JsonProperty("marginMode")
   private BitgetFuturesMarginMode marginMode;
 

@@ -92,7 +92,7 @@ class BitgetFuturesTradeServiceIntegrationTest extends
   }
 
   @Test
-  void place_market_buy_and_sell_order() throws IOException {
+  void place_market_buy_and_sell_orders() throws IOException {
     String buyOrderReference = UUID.randomUUID().toString();
     String sellOrderReference = UUID.randomUUID().toString();
     double amount = 0.001;
@@ -102,7 +102,6 @@ class BitgetFuturesTradeServiceIntegrationTest extends
             .productType(BitgetFuturesProductType.USDT_FUTURES)
             .instrument(CurrencyPair.BTC_USDT)
             .marginMode(BitgetFuturesMarginMode.ISOLATED)
-//            .tradeSidePositionMode(BitgetFuturesOrderTradeSidePositionMode.OPEN_POSITION)
             .originalAmount(BigDecimal.valueOf(amount))
             .type(OrderType.BID)
             .userReference(buyOrderReference)
@@ -113,7 +112,6 @@ class BitgetFuturesTradeServiceIntegrationTest extends
             .productType(BitgetFuturesProductType.USDT_FUTURES)
             .instrument(CurrencyPair.BTC_USDT)
             .marginMode(BitgetFuturesMarginMode.ISOLATED)
-  //          .tradeSidePositionMode(BitgetFuturesOrderTradeSidePositionMode.CLOSE_POSITION)
             .originalAmount(BigDecimal.valueOf(amount))
             .type(OrderType.ASK)
             .userReference(sellOrderReference)
