@@ -13,7 +13,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BitgetFuturesOrderTriggerPriceType {
 
+  /**
+   * Exact market transaction price
+   */
   MARKET_PRICE("fill_price"),
+  /**
+   * Calculated average reference price based on market and funding
+   */
   MARK_PRICE("mark_price");
 
   private static final Map<String, BitgetFuturesOrderTriggerPriceType> LOOKUP =

@@ -24,6 +24,10 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderStatus;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderTimeInForce;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderType;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionSide;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesTakeProfitStopLossPlanType;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
@@ -39,6 +43,8 @@ import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
+import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.instrument.Instrument;
 
@@ -238,6 +244,46 @@ public class BitgetFuturesAdapters {
         .orderType(BitgetFuturesOrderType.MARKET)
         .clientOid(bitgetMarketOrder.getUserReference())
         .reduceOnly(bitgetMarketOrder.getReduceOnly())
+        .build();
+  }
+
+  public BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto toBitgetPlaceOrderDto(
+      BitgetFuturesStopOrder stopOrder) {
+
+    BitgetFuturesTakeProfitStopLossPlanType planType = null;
+    switch (stopOrder.getIntention()){
+      case STOP_LOSS:
+        planType = BitgetFuturesTakeProfitStopLossPlanType.LOSS_PLAN;
+        break;
+      case TAKE_PROFIT:
+        planType = BitgetFuturesTakeProfitStopLossPlanType.PROFIT_PLAN;
+        break;
+      default:
+    }
+    BitgetFuturesPositionSide positionSide = null;
+    switch (stopOrder.getType()){
+      case BID:
+        positionSide = BitgetFuturesPositionSide.BUY;
+        break;
+      case ASK:
+        positionSide = BitgetFuturesPositionSide.SELL;
+        break;
+      default:
+    }
+
+    return BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto.builder()
+        .symbol(toSymbolString(stopOrder.getInstrument()))
+        .productType(stopOrder.getProductType().getCode())
+        .marginCurrency(stopOrder.getInstrument().getCounter())
+        .planType(planType)
+        .triggerPrice(stopOrder.getStopPrice())
+        .triggerType(stopOrder.getTriggerPriceType())
+        .executePrice(null)
+        .positionSide(positionSide)
+        .size(stopOrder.getOriginalAmount())
+        .rangeRate(null)
+        .clientOid(stopOrder.getUserReference())
+        .stpMode(null)
         .build();
   }
 

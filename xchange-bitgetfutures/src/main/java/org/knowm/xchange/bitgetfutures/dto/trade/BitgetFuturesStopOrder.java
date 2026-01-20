@@ -5,22 +5,20 @@ import java.util.Date;
 import java.util.Objects;
 import lombok.Getter;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
-import org.knowm.xchange.dto.trade.MarketOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
 import org.knowm.xchange.instrument.Instrument;
 
 /**
- * Bitget futures order.
+ * Bitget futures stop order.
  */
 @Getter
-public class BitgetFuturesMarketOrder extends MarketOrder {
+public class BitgetFuturesStopOrder extends StopOrder {
 
-  private BitgetFuturesProductType productType;
-  private BitgetFuturesMarginMode marginMode;
-  private BitgetFuturesOrderTradeSidePositionMode tradeSidePositionMode;
-  private Boolean reduceOnly;
+  private final BitgetFuturesProductType productType;
+  private final BitgetFuturesOrderTriggerPriceType triggerPriceType;
 
   @lombok.Builder
-  public BitgetFuturesMarketOrder(
+  public BitgetFuturesStopOrder(
       BitgetFuturesProductType productType,
       OrderType type,
       BitgetFuturesMarginMode marginMode,
@@ -30,18 +28,32 @@ public class BitgetFuturesMarketOrder extends MarketOrder {
       Boolean reduceOnly,
       String id,
       Date timestamp,
+      BitgetFuturesOrderTriggerPriceType triggerPriceType,
+      BigDecimal stopPrice,
+      BigDecimal limitPrice,
       BigDecimal averagePrice,
       BigDecimal cumulativeAmount,
       BigDecimal fee,
       OrderStatus status,
-      String userReference) {
-    super(type, originalAmount, instrument, id, timestamp, averagePrice, cumulativeAmount, fee,
-        status, userReference);
+      String userReference,
+      Intention intention,
+      BigDecimal trailValue) {
+    super(type,
+        originalAmount,
+        instrument,
+        id,
+        timestamp,
+        stopPrice,
+        limitPrice,
+        averagePrice,
+        cumulativeAmount,
+        fee,
+        status,
+        userReference,
+        intention,
+        trailValue);
     Objects.requireNonNull(productType, "productType must not be null");
     this.productType = productType;
-    Objects.requireNonNull(marginMode, "marginMode must not be null");
-    this.marginMode = marginMode;
-    this.tradeSidePositionMode = tradeSidePositionMode;
-    this.reduceOnly = reduceOnly;
+    this.triggerPriceType = triggerPriceType;
   }
 }

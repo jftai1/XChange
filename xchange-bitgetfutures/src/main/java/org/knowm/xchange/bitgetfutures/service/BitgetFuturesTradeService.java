@@ -14,11 +14,10 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 import org.knowm.xchange.dto.Order;
-import org.knowm.xchange.dto.account.OpenPositions;
 import org.knowm.xchange.dto.marketdata.Trades.TradeSortType;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
@@ -27,7 +26,6 @@ import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.TradeHistoryParams;
-import org.knowm.xchange.service.trade.params.orders.DefaultQueryOrderParam;
 import org.knowm.xchange.service.trade.params.orders.OrderQueryParams;
 
 public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw implements TradeService {
@@ -82,10 +80,10 @@ public class BitgetFuturesTradeService extends BitgetFuturesTradeServiceRaw impl
   @Override
   public String placeStopOrder(StopOrder stopOrder) throws IOException {
     try{
-      // Place market order
-      // Place TPSL order
-      BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto tpslOrder = null;
-      BitgetFuturesOrderUpdateInfoDto orderUpdateInfoDto = createTakeProfitStopLossOrder(tpslOrder);
+      Validate.isInstanceOf(BitgetFuturesStopOrder.class, stopOrder);
+      BitgetFuturesStopOrder bitgetFuturesStopOrder = (BitgetFuturesStopOrder) stopOrder;
+      BitgetFuturesOrderUpdateInfoDto orderUpdateInfoDto = createTakeProfitStopLossOrder(
+          BitgetFuturesAdapters.toBitgetPlaceOrderDto(bitgetFuturesStopOrder));
       return orderUpdateInfoDto.getOrderId();
     }
     catch (BitgetFuturesException e) {
