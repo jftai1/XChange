@@ -262,10 +262,10 @@ public class BitgetFuturesAdapters {
     }
     BitgetFuturesPositionSide positionSide = null;
     switch (stopOrder.getType()){
-      case BID:
+      case EXIT_BID:
         positionSide = BitgetFuturesPositionSide.BUY;
         break;
-      case ASK:
+      case EXIT_ASK:
         positionSide = BitgetFuturesPositionSide.SELL;
         break;
       default:

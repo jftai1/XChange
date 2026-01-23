@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,9 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderTriggerPriceType;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 import org.knowm.xchange.currency.Currency;
@@ -23,6 +26,7 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.marketdata.Ticker;
+import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrades;
 
 class BitgetFuturesTradeServiceIntegrationTest extends
@@ -161,6 +165,57 @@ class BitgetFuturesTradeServiceIntegrationTest extends
               sellOrderReference);
           assertThat(sellOrders.stream().findFirst().get().getStatus()).isEqualTo(
               Order.OrderStatus.FILLED);
+        });
+  }
+
+  @Test
+  void place_market_buy_with_stop_loss_order_close_position() throws IOException {
+    String buyOrderReference = UUID.randomUUID().toString();
+    double amount = 0.001;
+
+    BitgetFuturesMarketOrder buyMarketOrder =
+        BitgetFuturesMarketOrder.builder()
+            .productType(BitgetFuturesProductType.USDT_FUTURES)
+            .instrument(CurrencyPair.BTC_USDT)
+            .marginMode(BitgetFuturesMarginMode.ISOLATED)
+            .originalAmount(BigDecimal.valueOf(amount))
+            .type(OrderType.BID)
+            .userReference(buyOrderReference)
+            .build();
+    // Buy market order
+    String buyOrderId = exchange.getTradeService().placeMarketOrder(buyMarketOrder);
+    assertThat(buyOrderId).isNotNull();
+
+    Awaitility.await()
+        .atMost(20, TimeUnit.MINUTES)
+        .pollInterval(2, java.util.concurrent.TimeUnit.SECONDS)
+        .untilAsserted(() -> {
+          // Query order to get
+          BitgetFuturesQueryOrderHistoryParams queryButOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES)
+              .orderId(buyOrderId)
+              .build();
+          Collection<Order> orders = exchange.getTradeService().getOrder(queryButOrderParams);
+          assertThat(orders).size().isEqualTo(1);
+          assertThat(orders.stream().findFirst().get().getStatus()).isEqualTo(
+              Order.OrderStatus.FILLED);
+
+          BigDecimal averagePrice = orders.stream().findFirst().get().getAveragePrice();
+          BigDecimal stopLossPrice = averagePrice.multiply(BigDecimal.valueOf(0.98)).setScale(0,
+              RoundingMode.HALF_UP);
+
+          BitgetFuturesStopOrder stopLossOrder = BitgetFuturesStopOrder.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES)
+              .instrument(CurrencyPair.BTC_USDT)
+              .intention(Intention.STOP_LOSS)
+              .originalAmount(BigDecimal.valueOf(amount))
+              .type(OrderType.EXIT_BID)
+              .triggerPriceType(BitgetFuturesOrderTriggerPriceType.MARK_PRICE)
+              .stopPrice(stopLossPrice)
+              .build();
+
+          String stopLossOrderId = exchange.getTradeService().placeStopOrder(stopLossOrder);
+          assertThat(stopLossOrderId).isNotNull();
         });
   }
 
