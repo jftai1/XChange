@@ -6,18 +6,16 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
-import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesClosePositionsResponseDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesClosePositionsParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderTriggerPriceType;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
@@ -25,7 +23,6 @@ import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
-import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrades;
 
@@ -216,6 +213,72 @@ class BitgetFuturesTradeServiceIntegrationTest extends
 
           String stopLossOrderId = exchange.getTradeService().placeStopOrder(stopLossOrder);
           assertThat(stopLossOrderId).isNotNull();
+
+          BitgetFuturesClosePositionsParamsDto closePositionParams = BitgetFuturesClosePositionsParamsDto.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES.getCode())
+              .build();
+          BitgetFururesClosePositionsResponseDto closePositionResponse = ((BitgetFuturesTradeServiceRaw) exchange.getTradeService()).closePositions(
+              closePositionParams);
+          assertThat(closePositionResponse.getSuccessList()).isNotEmpty();
+        });
+  }
+
+  @Test
+  void place_market_sell_with_stop_loss_order_close_position() throws IOException {
+    String buyOrderReference = UUID.randomUUID().toString();
+    double amount = 0.001;
+
+    BitgetFuturesMarketOrder sellMarketOrder =
+        BitgetFuturesMarketOrder.builder()
+            .productType(BitgetFuturesProductType.USDT_FUTURES)
+            .instrument(CurrencyPair.BTC_USDT)
+            .marginMode(BitgetFuturesMarginMode.ISOLATED)
+            .originalAmount(BigDecimal.valueOf(amount))
+            .type(OrderType.ASK)
+            .userReference(buyOrderReference)
+            .build();
+    // Buy market order
+    String sellOrderId = exchange.getTradeService().placeMarketOrder(sellMarketOrder);
+    assertThat(sellOrderId).isNotNull();
+
+    Awaitility.await()
+        .atMost(20, TimeUnit.MINUTES)
+        .pollInterval(2, java.util.concurrent.TimeUnit.SECONDS)
+        .untilAsserted(() -> {
+          // Query order to get
+          BitgetFuturesQueryOrderHistoryParams queryButOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES)
+              .orderId(sellOrderId)
+              .build();
+          Collection<Order> orders = exchange.getTradeService().getOrder(queryButOrderParams);
+          assertThat(orders).size().isEqualTo(1);
+          assertThat(orders.stream().findFirst().get().getStatus()).isEqualTo(
+              Order.OrderStatus.FILLED);
+
+          BigDecimal averagePrice = orders.stream().findFirst().get().getAveragePrice();
+          BigDecimal stopLossPrice = averagePrice.multiply(BigDecimal.valueOf(1.02)).setScale(0,
+              RoundingMode.HALF_UP);
+
+          BitgetFuturesStopOrder stopLossOrder = BitgetFuturesStopOrder.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES)
+              .instrument(CurrencyPair.BTC_USDT)
+              .intention(Intention.STOP_LOSS)
+              .originalAmount(BigDecimal.valueOf(amount))
+              .type(OrderType.EXIT_ASK)
+              .triggerPriceType(BitgetFuturesOrderTriggerPriceType.MARK_PRICE)
+              .stopPrice(stopLossPrice)
+              .build();
+
+          String stopLossOrderId = exchange.getTradeService().placeStopOrder(stopLossOrder);
+          assertThat(stopLossOrderId).isNotNull();
+
+          BitgetFuturesClosePositionsParamsDto closePositionParams = BitgetFuturesClosePositionsParamsDto.builder()
+              .productType(BitgetFuturesProductType.USDT_FUTURES.getCode())
+              .build();
+          BitgetFururesClosePositionsResponseDto closePositionResponse = ((BitgetFuturesTradeServiceRaw) exchange.getTradeService()).closePositions(
+              closePositionParams);
+          assertThat(closePositionResponse.getSuccessList()).isNotEmpty();
+
         });
   }
 
