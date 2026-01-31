@@ -3,8 +3,6 @@ package org.knowm.xchange.bitgetfutures.service;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -17,8 +15,8 @@ import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesCandleDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParams;
+import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParamsFactory;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickRecentParams;
-import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesMarketDataTickerParams;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
@@ -86,16 +84,8 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
   @Override
   public List<Ticker> getTickers(Params params) throws IOException {
     try {
-      BitgetFuturesProductType futuresProductType = null;
-      Collection<Instrument> instruments = new ArrayList<Instrument>();
-
-      if (params instanceof BitgetFuturesMarketDataTickerParams) {
-        futuresProductType = ((BitgetFuturesMarketDataTickerParams) params).getFuturesProductType();
-      }else {
-        futuresProductType = exchange.getDefaultProductType();
-      }
-
-      return getBitgetTickerDtos(futuresProductType).stream()
+      BitgetFuturesProductType productType = exchange.getDefaultProductType();
+      return getBitgetTickerDtos(productType).stream()
           .map(BitgetFuturesAdapters::toTicker)
               .filter(Objects::nonNull)
           .collect(Collectors.toList());
@@ -113,7 +103,10 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
   public CandleStickData getCandleStickData(CurrencyPair currencyPair, CandleStickDataParams params)
       throws IOException {
 
-    BitgetFuturesCandleStickParams bitgetParams = (BitgetFuturesCandleStickParams) params;
+    BitgetFuturesProductType productType = exchange.getDefaultProductType();
+    BitgetFuturesCandlePriceType candlePriceType = exchange.getDefaultCandlePriceType();
+    BitgetFuturesCandleStickParams bitgetParams = BitgetFuturesCandleStickParamsFactory.createBitgetCandleStickParams(
+        params, productType, candlePriceType);
 
     List<BitgetFuturesCandleDto> bitgetCandleDtos = null;
     if (bitgetParams instanceof BitgetFuturesCandleStickRecentParams) {
@@ -121,7 +114,7 @@ public class BitgetFuturesMarketDataService extends BitgetFuturesMarketDataServi
           BitgetFuturesAdapters.toFuturesContract(currencyPair),
           bitgetParams.getProductType(),
           bitgetParams.getPeriodType(),
-          ((BitgetFuturesCandleStickRecentParams) bitgetParams).getChartType(),
+          ((BitgetFuturesCandleStickRecentParams) bitgetParams).getCandlePriceType(),
           bitgetParams.getStartDate(),
           bitgetParams.getEndDate(),
           bitgetParams.getLimit());

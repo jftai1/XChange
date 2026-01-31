@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
 
@@ -15,7 +14,6 @@ class BitgetExchangeIntegration extends BitgetIntegrationTestParent {
     assertThat(exchange.getExchangeMetaData()).isNotNull();
     Map<Instrument, InstrumentMetaData> instruments =
         exchange.getExchangeMetaData().getInstruments();
-    // TODO check for a specific instrument
-    //assertThat(instruments).containsKey(CurrencyPair.BTC_USDT);
+    assertThat(instruments).isNotEmpty();
   }
 }

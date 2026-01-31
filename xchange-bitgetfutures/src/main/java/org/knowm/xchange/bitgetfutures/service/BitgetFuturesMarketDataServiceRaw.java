@@ -52,7 +52,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
   public List<BitgetFuturesCandleDto> getBitgetRecentCandleDtos(FuturesContract futuresContract,
       BitgetFuturesProductType productType,
       BitgetFuturesCandleStickPeriodType periodType,
-      BitgetFuturesCandleChartType chartType,
+      BitgetFuturesCandlePriceType candlePriceType,
       Date startTime,
       Date endTime,
       Integer limit
@@ -63,7 +63,7 @@ public class BitgetFuturesMarketDataServiceRaw extends BitgetFuturesBaseService 
         periodType.getFieldValue(),
         String.valueOf(startTime.getTime()),
         String.valueOf(endTime.getTime()),
-        chartType.toString(),
+        candlePriceType.toString(),
         limit).getData();
   }
 

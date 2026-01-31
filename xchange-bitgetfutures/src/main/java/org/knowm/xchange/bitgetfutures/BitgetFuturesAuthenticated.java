@@ -27,11 +27,11 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderDetailDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderUpdateInfoDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceOrderDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountLeverageParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountMarginModeParamsDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesSetAccountPositionModeParamsDto;
-import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitStopLossOrderParamsDto;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -345,6 +345,35 @@ public interface BitgetFuturesAuthenticated {
       BitgetFuturesCancelTakeProfitStopLossOrderParamsDto bitgetFuturesCancelTakeProfitStopLossOrderParamsDto)
       throws IOException, BitgetFuturesException;
 
+  /**
+   * To query all existing pending orders.
+   *
+   * @param apiKey
+   * @param signer
+   * @param passphrase
+   * @param timestamp
+   * @param demo
+   * @param orderId     Order ID; If both orderId and clientOidare entered, orderId prevails.
+   * @param clientOid   Customize order ID; If both orderId and clientOidare entered, orderId
+   *                    prevails.
+   * @param symbol      Trading pair, e.g. ETHUSDT
+   * @param productType Product type (required)
+   * @param status      Order status If not specified, all ordered with a status of live (not filled
+   *                    yet) will be returned. live: pending orders partially_filled: Partially
+   *                    filled
+   * @param idLessThan  Requests the content on the page before this ID (older data), the value
+   *                    input should be the endId of the corresponding interface.
+   * @param startTime   Start timestamp Unix timestamp in milliseconds format, e.g. 1597026383085
+   *                    (The maximum time span supported is three months. The default end time is
+   *                    three months if no value is set for the end time. )
+   * @param endTime     End timestamp Unix timestamp in milliseconds format, e.g. 1597026383085 (The
+   *                    maximum time span supported is three months. The default start time is three
+   *                    months ago if no value is set for the start time. )
+   * @param limit       Number of queries: Maximum: 100, default: 100
+   * @return
+   * @throws IOException
+   * @throws BitgetFuturesException
+   */
   @GET
   @Path("api/v2/mix/order/orders-pending")
   BitgetFuturesResponse<List<BitgetFuturesOrderUpdateInfoDto>> pendingOrders(

@@ -4,8 +4,7 @@ import java.util.Date;
 import java.util.Objects;
 import lombok.Getter;
 import org.apache.commons.lang3.Validate;
-import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleChartType;
-import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleStickPeriodType;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandlePriceType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 
 @Getter
@@ -15,7 +14,7 @@ public class BitgetFuturesCandleStickRecentParams extends BitgetFuturesCandleSti
    * Candlestick chart types: MARKET tick; MARK mark; INDEX index;
    * MARKET by default.
    */
-  private BitgetFuturesCandleChartType chartType = null;
+  private BitgetFuturesCandlePriceType candlePriceType = null;
 
   /**
    * Constructor has package visibility to prevent direct instantiation. Use factory method instead.
@@ -24,7 +23,7 @@ public class BitgetFuturesCandleStickRecentParams extends BitgetFuturesCandleSti
    * @param periodInSeconds granularity K-line particle size, ex: 1H(1 hour) (required)
    * @param limit Default: 100, maximum: 1000 (optional)
    * @param productType Product type (required)
-   * @param chartType Candlestick chart types: MARKET tick; MARK mark; INDEX index; MARKET by default (optional)
+   * @param candlePriceType Candlestick chart types: MARKET tick; MARK mark; INDEX index; MARKET by default (optional)
    */
   BitgetFuturesCandleStickRecentParams(
       Date startDate,
@@ -32,9 +31,9 @@ public class BitgetFuturesCandleStickRecentParams extends BitgetFuturesCandleSti
       long periodInSeconds,
       int limit,
       BitgetFuturesProductType productType,
-      BitgetFuturesCandleChartType chartType) {
+      BitgetFuturesCandlePriceType candlePriceType) {
     super(startDate, endDate, periodInSeconds, limit, productType);
-    this.chartType = chartType;
+    this.candlePriceType = candlePriceType;
     Objects.requireNonNull(startDate);
     Objects.requireNonNull(endDate);
     Validate.isTrue(limit <= 1000);

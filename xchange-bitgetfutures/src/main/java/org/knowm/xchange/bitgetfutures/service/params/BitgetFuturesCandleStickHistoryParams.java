@@ -3,8 +3,6 @@ package org.knowm.xchange.bitgetfutures.service.params;
 import java.util.Date;
 import java.util.Objects;
 import org.apache.commons.lang3.Validate;
-import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleChartType;
-import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandleStickPeriodType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 
 public class BitgetFuturesCandleStickHistoryParams extends BitgetFuturesCandleStickParams {

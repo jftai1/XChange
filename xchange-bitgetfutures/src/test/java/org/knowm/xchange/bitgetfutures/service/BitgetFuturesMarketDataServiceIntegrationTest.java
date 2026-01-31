@@ -9,18 +9,19 @@ import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.knowm.xchange.bitgetfutures.BitgetIntegrationTestParent;
-import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParams;
-import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesCandleStickParamsFactory;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesMarketDataTickerParams;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.CandleStickData;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.instrument.Instrument;
+import org.knowm.xchange.service.trade.params.CandleStickDataParams;
+import org.knowm.xchange.service.trade.params.DefaultCandleStickParamWithLimit;
 
 class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTestParent {
 
   @Test
   void valid_single_ticker() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
     Ticker ticker = exchange.getMarketDataService().getTicker((Instrument)CurrencyPair.BTC_USDT);
 
     assertThat(ticker.getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
@@ -33,6 +34,7 @@ class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTes
 
   @Test
   void valid_single_ticker_productType() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
     Ticker ticker = exchange.getMarketDataService().getTicker((Instrument)CurrencyPair.BTC_USDT,BitgetFuturesProductType.USDT_FUTURES);
 
     assertThat(ticker.getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
@@ -46,6 +48,7 @@ class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTes
 
   @Test
   void valid_tickers() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
     List<Ticker> tickers = exchange.getMarketDataService().getTickers(null);
     assertThat(tickers).isNotEmpty();
 
@@ -63,6 +66,7 @@ class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTes
 
   @Test
   void valid_tickers_productType() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
     BitgetFuturesMarketDataTickerParams params = new BitgetFuturesMarketDataTickerParams(BitgetFuturesProductType.USDT_FUTURES);
     List<Ticker> tickers = exchange.getMarketDataService().getTickers(params);
     assertThat(tickers).isNotEmpty();
@@ -85,20 +89,19 @@ class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTes
     Date startDate = Date.from(Instant.now().minus(24, ChronoUnit.HOURS));
     Date endDate = Date.from(Instant.now());
     int limit = 100;
-    BitgetFuturesProductType productType = BitgetFuturesProductType.USDT_FUTURES;
-    BitgetFuturesCandleStickPeriodType periodType = BitgetFuturesCandleStickPeriodType.CANDLE_STICK_1H;
-    BitgetFuturesCandleChartType chartType = BitgetFuturesCandleChartType.MARKET;
 
-    BitgetFuturesCandleStickParams bitgetParams = BitgetFuturesCandleStickParamsFactory.createBitgetCandleStickParams(
-        startDate,
+    // Set Exchange specific params
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    exchange.setExchangeDefaultCandlePriceType(BitgetFuturesCandlePriceType.MARK);
+
+    BitgetFuturesCandleStickPeriodType periodType = BitgetFuturesCandleStickPeriodType.CANDLE_STICK_1H;
+
+    CandleStickDataParams params = new DefaultCandleStickParamWithLimit(startDate,
         endDate,
-        limit,
-        productType,
-        periodType,
-        chartType
-    );
+        periodType.getPeriodInSeconds(),
+        limit);
     CandleStickData candleStickData = exchange.getMarketDataService()
-        .getCandleStickData(currencyPair, bitgetParams);
+        .getCandleStickData(currencyPair, params);
     assertThat(candleStickData.getInstrument().getBase()).isEqualTo(CurrencyPair.BTC_USDT.base);
     assertThat(candleStickData.getInstrument().getCounter()).isEqualTo(
         CurrencyPair.BTC_USDT.counter);
@@ -112,21 +115,20 @@ class BitgetFuturesMarketDataServiceIntegrationTest extends BitgetIntegrationTes
     Date endDate = Date.from(now.minus(60, ChronoUnit.DAYS));
     Date startDate = Date.from(endDate.toInstant().minus(24, ChronoUnit.HOURS));
     int limit = 24;
-    BitgetFuturesProductType productType = BitgetFuturesProductType.USDT_FUTURES;
-    BitgetFuturesCandleStickPeriodType periodType = BitgetFuturesCandleStickPeriodType.CANDLE_STICK_1H;
-    BitgetFuturesCandleChartType chartType = BitgetFuturesCandleChartType.MARKET;
 
-    BitgetFuturesCandleStickParams bitgetParams = BitgetFuturesCandleStickParamsFactory.createBitgetCandleStickParams(
-        startDate,
+    // Set Exchange specific params
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    exchange.setExchangeDefaultCandlePriceType(BitgetFuturesCandlePriceType.MARK);
+
+    BitgetFuturesCandleStickPeriodType periodType = BitgetFuturesCandleStickPeriodType.CANDLE_STICK_1H;
+
+    CandleStickDataParams params = new DefaultCandleStickParamWithLimit(startDate,
         endDate,
-        limit,
-        productType,
-        periodType,
-        chartType
-    );
+        periodType.getPeriodInSeconds(),
+        limit);
 
     CandleStickData candleStickData = exchange.getMarketDataService()
-        .getCandleStickData(currencyPair, bitgetParams);
+        .getCandleStickData(currencyPair, params);
     assertThat(candleStickData.getInstrument().getBase()).isEqualTo(CurrencyPair.BTC_USDT.base);
     assertThat(candleStickData.getInstrument().getCounter()).isEqualTo(
         CurrencyPair.BTC_USDT.counter);

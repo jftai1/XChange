@@ -24,7 +24,11 @@ public enum BitgetFuturesMarginMode {
 
   @JsonCreator
   public static BitgetFuturesMarginMode getMode(String s) {
-    BitgetFuturesMarginMode value = LOOKUP.get(s);
+    if (s == null){
+      throw new IllegalArgumentException("Unknown order margin mode: null");
+    }
+    String key = s.trim().toLowerCase();
+    BitgetFuturesMarginMode value = LOOKUP.get(key);
     if (value == null) {
       throw new IllegalArgumentException("Unknown order margin mode: " + s);
     }

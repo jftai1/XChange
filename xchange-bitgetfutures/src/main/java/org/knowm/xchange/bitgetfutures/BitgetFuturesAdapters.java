@@ -18,6 +18,7 @@ import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesTickerDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesFillDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesLimitOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderHistoryDto;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderStatus;
@@ -28,6 +29,7 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPlaceTakeProfitSto
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesPositionSide;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesTakeProfitStopLossPlanType;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.derivative.FuturesContract;
@@ -43,8 +45,6 @@ import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
-import org.knowm.xchange.dto.trade.StopOrder;
-import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrade;
 import org.knowm.xchange.instrument.Instrument;
 
@@ -91,6 +91,7 @@ public class BitgetFuturesAdapters {
   public InstrumentMetaData toInstrumentMetaData(BitgetFuturesContractDto bitgetFuturesContractDto) {
     InstrumentMetaData.Builder builder =
         new InstrumentMetaData.Builder()
+            .tradingFee(bitgetFuturesContractDto.getFeeRateUpRatio())
             .minimumAmount(bitgetFuturesContractDto.getMinTradeNum());
     return builder.build();
   }
@@ -232,6 +233,23 @@ public class BitgetFuturesAdapters {
     return Optional.ofNullable(instant).map(Date::from).orElse(null);
   }
 
+  public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(MarketOrder marketOrder,
+      BitgetFuturesProductType productType,
+      BitgetFuturesMarginMode marginMode) {
+    return BitgetFuturesPlaceOrderDto.builder()
+        .symbol(toSymbolString(marketOrder.getInstrument()))
+        .productType(productType.getCode())
+        .marginMode(marginMode)
+        .marginCurrency(marketOrder.getInstrument().getCounter())
+        .size(marketOrder.getOriginalAmount())
+        .orderSide(marketOrder.getType())
+        .orderType(BitgetFuturesOrderType.MARKET)
+        .clientOid(marketOrder.getUserReference())
+        .build();
+  }
+
+  // Remove this
+  @Deprecated
   public BitgetFuturesPlaceOrderDto toBitgetPlaceOrderDto(BitgetFuturesMarketOrder bitgetMarketOrder) {
     return BitgetFuturesPlaceOrderDto.builder()
         .symbol(toSymbolString(bitgetMarketOrder.getInstrument()))

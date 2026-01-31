@@ -25,15 +25,17 @@ import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrades;
+import org.knowm.xchange.service.trade.params.orders.DefaultQueryOrderParam;
+import org.knowm.xchange.service.trade.params.orders.DefaultQueryOrderParamCurrencyPair;
+import org.knowm.xchange.service.trade.params.orders.DefaultQueryOrderParamInstrument;
 
 class BitgetFuturesTradeServiceIntegrationTest extends
     BitgetFuturesAuthenticatedServiceIntegrationBase {
 
   @Test
   void get_orders_udst() throws IOException {
-    BitgetFuturesQueryOrderHistoryParams params = BitgetFuturesQueryOrderHistoryParams.builder()
-        .productType(BitgetFuturesProductType.USDT_FUTURES)
-        .build();
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    DefaultQueryOrderParam params = new DefaultQueryOrderParam();
     Collection<Order> orders = exchange.getTradeService().getOrder(params);
     if (orders != null) {
       assertThat(orders).allSatisfy(order -> {
@@ -50,19 +52,61 @@ class BitgetFuturesTradeServiceIntegrationTest extends
   }
 
   @Test
+  void get_orders_udst_btc_currency_pair() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    DefaultQueryOrderParamCurrencyPair params = new DefaultQueryOrderParamCurrencyPair(
+        CurrencyPair.BTC_USDT,
+        null
+    );
+    Collection<Order> orders = exchange.getTradeService().getOrder(params);
+    if (orders != null) {
+      assertThat(orders).allSatisfy(order -> {
+        assertThat(order.getId()).isNotNull();
+        assertThat(order.getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
+        assertThat(order.getType()).isNotNull();
+        assertThat(order.getStatus()).isNotNull();
+        assertThat(order.getOriginalAmount()).isNotNull();
+        assertThat(order.getCumulativeAmount()).isNotNull();
+        assertThat(order.getAveragePrice()).isNotNull();
+        assertThat(order.getTimestamp()).isNotNull();
+      });
+    }
+  }
+
+  @Test
+  void get_orders_udst_btc_instrument() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    DefaultQueryOrderParamInstrument params = new DefaultQueryOrderParamInstrument(
+        CurrencyPair.BTC_USDT,
+        null
+    );
+    Collection<Order> orders = exchange.getTradeService().getOrder(params);
+    if (orders != null) {
+      assertThat(orders).allSatisfy(order -> {
+        assertThat(order.getId()).isNotNull();
+        assertThat(order.getInstrument()).isEqualTo(CurrencyPair.BTC_USDT);
+        assertThat(order.getType()).isNotNull();
+        assertThat(order.getStatus()).isNotNull();
+        assertThat(order.getOriginalAmount()).isNotNull();
+        assertThat(order.getCumulativeAmount()).isNotNull();
+        assertThat(order.getAveragePrice()).isNotNull();
+        assertThat(order.getTimestamp()).isNotNull();
+      });
+    }
+  }
+
+  @Test
   void get_single_order_udst() throws IOException {
-    BitgetFuturesQueryOrderHistoryParams params = BitgetFuturesQueryOrderHistoryParams.builder()
-        .productType(BitgetFuturesProductType.USDT_FUTURES)
-        .build();
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    DefaultQueryOrderParam params = new DefaultQueryOrderParam();
     Collection<Order> orders = exchange.getTradeService().getOrder(params);
     if (orders != null && !orders.isEmpty()) {
       Order order = orders.stream().findFirst().get();
       assertThat(order).isNotNull();
       Optional<Order> foundOrder = Optional.empty();
-      BitgetFuturesQueryOrderHistoryParams paramsQuerySingleOrder = BitgetFuturesQueryOrderHistoryParams.builder()
-          .productType(BitgetFuturesProductType.USDT_FUTURES)
-          .orderId(order.getId())
-          .build();
+      DefaultQueryOrderParam paramsQuerySingleOrder = new DefaultQueryOrderParam(
+          order.getId()
+      );
       for (Order order1 : exchange.getTradeService().getOrder(paramsQuerySingleOrder)) {
         foundOrder = Optional.of(order1);
         break;
@@ -71,7 +115,6 @@ class BitgetFuturesTradeServiceIntegrationTest extends
       assertThat(foundOrder.get().getId()).isEqualTo(order.getId());
     }
   }
-
 
   @Test
   void get_trade_history_udst() throws IOException {
@@ -112,12 +155,12 @@ class BitgetFuturesTradeServiceIntegrationTest extends
     // SELL Order
     BitgetFuturesMarketOrder sellMarketOrder =
         BitgetFuturesMarketOrder.builder()
-            .productType(BitgetFuturesProductType.USDT_FUTURES)
-            .instrument(CurrencyPair.BTC_USDT)
-            .marginMode(BitgetFuturesMarginMode.ISOLATED)
-            .originalAmount(BigDecimal.valueOf(amount))
             .type(OrderType.ASK)
+            .originalAmount(BigDecimal.valueOf(amount))
+            .instrument(CurrencyPair.BTC_USDT)
             .userReference(sellOrderReference)
+            .productType(BitgetFuturesProductType.USDT_FUTURES)
+            .marginMode(BitgetFuturesMarginMode.ISOLATED)
             .build();
     // Place buy order
     String buyOrderId = exchange.getTradeService().placeMarketOrder(buyMarketOrder);

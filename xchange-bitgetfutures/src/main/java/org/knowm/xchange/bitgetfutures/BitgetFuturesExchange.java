@@ -10,7 +10,9 @@ import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto;
 import org.knowm.xchange.bitgetfutures.dto.marketdata.BitgetFuturesContractDto.SymbolType;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesAccountService;
+import org.knowm.xchange.bitgetfutures.service.BitgetFuturesCandlePriceType;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataService;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesMarketDataServiceRaw;
 import org.knowm.xchange.bitgetfutures.service.BitgetFuturesProductType;
@@ -20,6 +22,11 @@ import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.instrument.Instrument;
 
 public class BitgetFuturesExchange extends BaseExchange {
+
+  public static final String EXCHANGE_SPECIFICATION_KEY_PRODUCT_TYPE = "bitgetfutures.productType";
+  public static final String EXCHANGE_SPECIFICATION_KEY_MARGIN_MODE = "bitgetfutures.marginMode";
+  public static final String EXCHANGE_SPECIFICATION_KEY_CANDLE_PRICE_TYPE = "bitgetfutures.candlePriceType";
+
 
   /**
    * Exchange product types;
@@ -97,12 +104,63 @@ public class BitgetFuturesExchange extends BaseExchange {
   }
 
   /**
-   * TODO May be part of Exchange Configuration parameters.
-   * @return
+   * Returns the exchange default product type.
+   * @return null if not set
    */
   public BitgetFuturesProductType getDefaultProductType(){
-    return BitgetFuturesProductType.USDT_FUTURES;
+    String value = (String) this.getExchangeSpecification()
+        .getExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_PRODUCT_TYPE);
+    return BitgetFuturesProductType.fromCode(value);
   }
 
+  /**
+   * Sets the exchange default product type.
+   *
+   * @param productType
+   */
+  public void setExchangeDefaultProductType(BitgetFuturesProductType productType) {
+    this.getExchangeSpecification()
+        .setExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_PRODUCT_TYPE,
+            productType.getCode());
+  }
+
+  /**
+   * Returns the exchange default margin mode.
+   *
+   * @return null if not set
+   */
+  public BitgetFuturesMarginMode getDefaultMarginMode() {
+    String value = (String) this.getExchangeSpecification()
+        .getExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_MARGIN_MODE);
+    return BitgetFuturesMarginMode.getMode(value);
+  }
+
+  /**
+   * Sets the exchange default margin mode.
+   *
+   * @param marginMode
+   */
+  public void setExchangeDefaultMarginMode(BitgetFuturesMarginMode marginMode) {
+    this.getExchangeSpecification()
+        .setExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_MARGIN_MODE,
+            marginMode.getValue());
+  }
+
+  public BitgetFuturesCandlePriceType getDefaultCandlePriceType() {
+    String value = (String) this.getExchangeSpecification()
+        .getExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_CANDLE_PRICE_TYPE);
+    return BitgetFuturesCandlePriceType.getType(value);
+  }
+
+  /**
+   * Sets the exchange default candle price type.
+   *
+   * @param candlePriceType
+   */
+  public void setExchangeDefaultCandlePriceType(BitgetFuturesCandlePriceType candlePriceType) {
+    this.getExchangeSpecification()
+        .setExchangeSpecificParametersItem(EXCHANGE_SPECIFICATION_KEY_CANDLE_PRICE_TYPE,
+            candlePriceType.getValue());
+  }
 
 }
