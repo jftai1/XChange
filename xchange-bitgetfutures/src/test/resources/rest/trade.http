@@ -54,7 +54,8 @@ paptrading: 1
   "marginMode": "isolated",
   "side" : "buy",
   "orderType": "market",
-  "size": "0.001"
+  "size": "0.001",
+  "clientOid": "b9f0c8a1-52c4-4cb2-8d2a-5f8df95f9c3e"
 }
 
 ### Place position stop loss USDT-FUTURES, BTCUSDT

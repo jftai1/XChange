@@ -23,9 +23,9 @@ import org.knowm.xchange.instrument.Instrument;
 
 public class BitgetFuturesExchange extends BaseExchange {
 
-  public static final String EXCHANGE_SPECIFICATION_KEY_PRODUCT_TYPE = "bitgetfutures.productType";
-  public static final String EXCHANGE_SPECIFICATION_KEY_MARGIN_MODE = "bitgetfutures.marginMode";
-  public static final String EXCHANGE_SPECIFICATION_KEY_CANDLE_PRICE_TYPE = "bitgetfutures.candlePriceType";
+  public static final String EXCHANGE_SPECIFICATION_KEY_PRODUCT_TYPE = "bitgetFuturesProductType";
+  public static final String EXCHANGE_SPECIFICATION_KEY_MARGIN_MODE = "bitgetFuturesMarginMode";
+  public static final String EXCHANGE_SPECIFICATION_KEY_CANDLE_PRICE_TYPE = "bitgetFuturesCandlePriceType";
 
 
   /**

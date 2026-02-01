@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -17,12 +18,14 @@ import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarginMode;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesMarketOrder;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesOrderTriggerPriceType;
 import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFuturesStopOrder;
+import org.knowm.xchange.bitgetfutures.dto.trade.MarketOrderBuilder;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesQueryOrderHistoryParams;
 import org.knowm.xchange.bitgetfutures.service.params.BitgetFuturesTradeHistoryParams;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.StopOrder.Intention;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.service.trade.params.orders.DefaultQueryOrderParam;
@@ -139,38 +142,33 @@ class BitgetFuturesTradeServiceIntegrationTest extends
 
   @Test
   void place_market_buy_and_sell_orders() throws IOException {
+    exchange.setExchangeDefaultProductType(BitgetFuturesProductType.USDT_FUTURES);
+    exchange.setExchangeDefaultMarginMode(BitgetFuturesMarginMode.ISOLATED);
     String buyOrderReference = UUID.randomUUID().toString();
     String sellOrderReference = UUID.randomUUID().toString();
     double amount = 0.001;
     // BUY Order
-    BitgetFuturesMarketOrder buyMarketOrder =
-        BitgetFuturesMarketOrder.builder()
-            .productType(BitgetFuturesProductType.USDT_FUTURES)
-            .instrument(CurrencyPair.BTC_USDT)
-            .marginMode(BitgetFuturesMarginMode.ISOLATED)
-            .originalAmount(BigDecimal.valueOf(amount))
-            .type(OrderType.BID)
-            .userReference(buyOrderReference)
-            .build();
+    MarketOrder buyMarketOrder = MarketOrderBuilder.builder()
+        .type(OrderType.BID)
+        .originalAmount(BigDecimal.valueOf(amount))
+        .instrument(CurrencyPair.BTC_USDT)
+        .userReference(buyOrderReference)
+        .build().toMarketOrder();
     // SELL Order
-    BitgetFuturesMarketOrder sellMarketOrder =
-        BitgetFuturesMarketOrder.builder()
-            .type(OrderType.ASK)
-            .originalAmount(BigDecimal.valueOf(amount))
-            .instrument(CurrencyPair.BTC_USDT)
-            .userReference(sellOrderReference)
-            .productType(BitgetFuturesProductType.USDT_FUTURES)
-            .marginMode(BitgetFuturesMarginMode.ISOLATED)
-            .build();
+    MarketOrder sellMarketOrder = MarketOrderBuilder.builder()
+        .type(OrderType.ASK)
+        .originalAmount(BigDecimal.valueOf(amount))
+        .instrument(CurrencyPair.BTC_USDT)
+        .userReference(sellOrderReference)
+        .build().toMarketOrder();
+
     // Place buy order
     String buyOrderId = exchange.getTradeService().placeMarketOrder(buyMarketOrder);
     assertThat(buyOrderId).isNotNull();
     // Query the BUY order
-    BitgetFuturesQueryOrderHistoryParams buyOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
-        .productType(BitgetFuturesProductType.USDT_FUTURES)
-        .orderId(buyOrderId)
-        .build();
-
+    DefaultQueryOrderParam buyOrderParams = new DefaultQueryOrderParam(
+        buyOrderId
+    );
     Awaitility.await()
         .atMost(20, TimeUnit.MINUTES)
         .pollInterval(2, java.util.concurrent.TimeUnit.SECONDS)
@@ -190,10 +188,9 @@ class BitgetFuturesTradeServiceIntegrationTest extends
               Order.OrderStatus.FILLED);
           // Place SELL order
           String sellOrderId = exchange.getTradeService().placeMarketOrder(sellMarketOrder);
-          BitgetFuturesQueryOrderHistoryParams sellOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
-              .productType(BitgetFuturesProductType.USDT_FUTURES)
-              .orderId(sellOrderId)
-              .build();
+          DefaultQueryOrderParam sellOrderParams = new DefaultQueryOrderParam(
+              sellOrderId
+          );
           Collection<Order> sellOrders = exchange.getTradeService().getOrder(sellOrderParams);
           assertThat(sellOrders).size().isEqualTo(1);
           assertThat(sellOrders.stream().findFirst().get().getId()).isEqualTo(sellOrderId);
@@ -213,15 +210,14 @@ class BitgetFuturesTradeServiceIntegrationTest extends
     String buyOrderReference = UUID.randomUUID().toString();
     double amount = 0.001;
 
-    BitgetFuturesMarketOrder buyMarketOrder =
-        BitgetFuturesMarketOrder.builder()
-            .productType(BitgetFuturesProductType.USDT_FUTURES)
-            .instrument(CurrencyPair.BTC_USDT)
-            .marginMode(BitgetFuturesMarginMode.ISOLATED)
-            .originalAmount(BigDecimal.valueOf(amount))
-            .type(OrderType.BID)
-            .userReference(buyOrderReference)
-            .build();
+    Date timestamp = null;
+    MarketOrder buyMarketOrder = MarketOrderBuilder.builder()
+        .type(OrderType.BID)
+        .originalAmount(BigDecimal.valueOf(amount))
+        .instrument(CurrencyPair.BTC_USDT)
+        .userReference(buyOrderReference)
+        .build().toMarketOrder();
+
     // Buy market order
     String buyOrderId = exchange.getTradeService().placeMarketOrder(buyMarketOrder);
     assertThat(buyOrderId).isNotNull();
@@ -231,11 +227,10 @@ class BitgetFuturesTradeServiceIntegrationTest extends
         .pollInterval(2, java.util.concurrent.TimeUnit.SECONDS)
         .untilAsserted(() -> {
           // Query order to get
-          BitgetFuturesQueryOrderHistoryParams queryButOrderParams = BitgetFuturesQueryOrderHistoryParams.builder()
-              .productType(BitgetFuturesProductType.USDT_FUTURES)
-              .orderId(buyOrderId)
-              .build();
-          Collection<Order> orders = exchange.getTradeService().getOrder(queryButOrderParams);
+          DefaultQueryOrderParam buyOrderParams = new DefaultQueryOrderParam(
+              buyOrderId
+          );
+          Collection<Order> orders = exchange.getTradeService().getOrder(buyOrderParams);
           assertThat(orders).size().isEqualTo(1);
           assertThat(orders.stream().findFirst().get().getStatus()).isEqualTo(
               Order.OrderStatus.FILLED);
