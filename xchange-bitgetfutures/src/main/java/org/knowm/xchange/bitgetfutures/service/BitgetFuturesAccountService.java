@@ -1,6 +1,7 @@
 package org.knowm.xchange.bitgetfutures.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesAdapters;
@@ -8,8 +9,10 @@ import org.knowm.xchange.bitgetfutures.BitgetFuturesErrorAdapter;
 import org.knowm.xchange.bitgetfutures.BitgetFuturesExchange;
 import org.knowm.xchange.bitgetfutures.dto.BitgetFuturesException;
 import org.knowm.xchange.bitgetfutures.dto.account.BitgetFuturesAccountBalanceInfoDto;
+import org.knowm.xchange.bitgetfutures.dto.trade.BitgetFururesSetAccountLeverageResponseDto;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.account.Wallet;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.account.AccountService;
 
 public class BitgetFuturesAccountService extends BitgetFuturesAccountServiceRaw implements
@@ -34,5 +37,18 @@ public class BitgetFuturesAccountService extends BitgetFuturesAccountServiceRaw 
     } catch (BitgetFuturesException e) {
       throw BitgetFuturesErrorAdapter.adapt(e);
     }
+  }
+
+  @Override
+  public BigDecimal setAccountLeverage(Instrument instrument, BigDecimal leverage)
+      throws IOException {
+
+    BitgetFuturesProductType productType = exchange.getDefaultProductType();
+
+    BitgetFururesSetAccountLeverageResponseDto response = setAccountLeverage(productType,
+        BitgetFuturesAdapters.toSymbolString(instrument),
+        BitgetFuturesAdapters.toMarginCoin(instrument),
+        leverage);
+    return response.getLongLeverage();
   }
 }

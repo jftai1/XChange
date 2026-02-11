@@ -224,4 +224,18 @@ public interface AccountService extends BaseService {
   default Map<Instrument, Fee> getDynamicTradingFeesByInstrument() throws IOException {
     throw new NotYetImplementedForExchangeException("getDynamicTradingFeesByInstrument");
   }
+
+  /**
+   * Set the leverage for the given instrument.
+   *
+   * @param instrument
+   * @param leverage
+   * @return
+   * @throws IOException
+   */
+  default BigDecimal setAccountLeverage(Instrument instrument, BigDecimal leverage)
+      throws IOException {
+    throw new NotYetImplementedForExchangeException("setAccountLeverage");
+  }
+
 }

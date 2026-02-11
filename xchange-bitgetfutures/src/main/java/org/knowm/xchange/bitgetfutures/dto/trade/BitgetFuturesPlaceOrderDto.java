@@ -20,7 +20,7 @@ import org.knowm.xchange.dto.Order;
 public class BitgetFuturesPlaceOrderDto {
 
   /**
-   * Trading pair, e.g. BTC_USDT
+   * Trading pair, e.g. BTCUSDT
    */
   @JsonProperty("symbol")
   private String symbol;
